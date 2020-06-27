@@ -5,7 +5,7 @@ michaelmason@live.com.au
 """
 
 class PhoneBook():
-    def __init__(self, file=None, json=False, xml=False, csv=False):
+    def __init__(self, file=None):
         self.records = {}
         if file:
             self.records = self.retrieve_records(file)
@@ -23,6 +23,6 @@ class PhoneBook():
         records = {}
         return records
 
-    def display_record(self):
+    def display(self):
         pass
 

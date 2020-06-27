@@ -18,3 +18,7 @@ A simple Python module that's designed to take a set of personal data and store 
 - Write it in such a way that it would be easy for a developer to extend the system e.g:
   - to add support for additional storage formats
   - to query a list of currently supported formats
+  
+We like to see your approach, methods and technologies you used.  We'd expect you to describe any problems or pitfalls 
+you expected, and how you overcome them. We primarily use the technical task as a starting ground for a technical 
+interview, as well as gauge coding expertise. 
