@@ -5,6 +5,24 @@ michaelmason@live.com.au
 """
 
 class PhoneBook():
-    def __init__(self):
+    def __init__(self, file=None, json=False, xml=False, csv=False):
+        self.records = {}
+        if file:
+            self.records = self.retrieve_records(file)
+
+    def add_record(self, name, address, phone):
+        pass
+
+    def remove_record(self, name=None, address=None, phone=None):
+        pass
+
+    def store_records(self):
+        pass
+
+    def retrieve_records(self, file):
+        records = {}
+        return records
+
+    def display_record(self):
         pass
 
