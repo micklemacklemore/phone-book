@@ -6,11 +6,11 @@ michaelmason@live.com.au
 
 class PhoneBook():
     def __init__(self, file=None):
-        self.records = {}
+        self.database = []
         if file:
             self.records = self.retrieve_records(file)
 
-    def add_record(self, name, address, phone):
+    def add_record(self, name=None, address=None, phone=None):
         pass
 
     def remove_record(self, name=None, address=None, phone=None):
