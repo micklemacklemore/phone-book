@@ -46,12 +46,20 @@ class PhoneBookCommands(object):
             order_id_list = []
             for i in self._database:
                 order_id_list.append(int(i))
-            order = 1 + max(order_id_list)
+            order_id = 1 + max(order_id_list)
         self._database[str(order_id)] = record
         self.store_records()
 
-    def remove_record(self, order_id=None):
-        pass
+    def remove_record(self, order_id):
+        if self._database:
+            if order_id in self._database:
+                del self._database[order_id]
+                database = self._database.copy()
+                for counter, order_id in enumerate(database, start=1):
+                    self._database[str(counter)] = self._database.pop(order_id)
+            else:
+                return
+        self.store_records()
 
     def retrieve_records(self):
         with open(self._file) as file:
@@ -70,7 +78,8 @@ class PhoneBookCommands(object):
         pass
 
 pb = PhoneBookCommands(file="pbook.json")
-pb.add_record("mike", None, "+61 400 802 932")
+# pb.add_record("Mike", "109 Hawken Drive", "+61 400 702 089")
+pb.remove_record(order_id="1")
 
 # Query supported formats
 # clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)
