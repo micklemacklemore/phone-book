@@ -9,13 +9,10 @@ import os
 
 class PhoneBookCommands(object):
     def __init__(self, file=None):
+        self._file = file  # TODO: make the file extension not case sensitive?
+        self._format = file.rsplit('.')[-1]
+        self._object = self._create_filetypes_object()
         self._database = {}
-        self._format = file.rsplit('.')[1]
-        self._file = file
-
-        if self._format in [i[0] for i in self.query_filetypes()]:
-            print True
-        self._object = filetypes.PhoneBookJSON()  # TODO: determine object to use based on the file extension
 
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
@@ -61,22 +58,31 @@ class PhoneBookCommands(object):
     def convert_records(self):
         pass
 
-    def search_records(self):
+    def filter_records(self):
+        pass
+
+    def change_records(self, order_id):
         pass
 
     def query_filetypes(self):
         clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)
-        classes = [(i[1]().filetype, i[1]) for i in clsmembers]  # TODO: This would be easier to read as a dictionary
+        classes = {}
+        for i in clsmembers:
+            classes[i[1]().filetype] = i[1]
         return classes
 
+    def _create_filetypes_object(self):
+        if self._format in self.query_filetypes():
+            return self.query_filetypes()[self._format]()
+        else:
+            raise ValueError("file extension '{}' is not supported".format(self._format))
+
 pb = PhoneBookCommands(file="pbook.json")
-# pb.add_record("1", "asdf", "ASDFasdf")
-# pb.add_record("2", "asdf", "ASDFasdf")
-# pb.add_record("3", "asdf", "ASDFasdf")
-# pb.add_record("4", "asdf", "ASDFasdf")
-# pb.add_record("5", "asdf", "ASDFasdf")
-# pb.add_record("6", "asdf", "ASDFasdf")
+# pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
+# pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
+# pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
+# pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
+# pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
 # pb.remove_record(order_id="1")
 
 # Query supported formats
-print pb.query_filetypes()
