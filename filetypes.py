@@ -1,9 +1,9 @@
-from filetypes_abstract import PhoneBookABC
+import filetypes_abstract
 import json
 import csv
 
 
-class PhoneBookJSON(PhoneBookABC):
+class PhoneBookJSON(filetypes_abstract.PhoneBookABC):
     def __init__(self):
         self._filetype = 'json'
 
@@ -20,7 +20,7 @@ class PhoneBookJSON(PhoneBookABC):
         return data  # return data as dictionary
 
 
-class PhoneBookCSV(PhoneBookABC):
+class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
     def __init__(self):
         self._filetype = 'csv'
 

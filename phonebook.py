@@ -13,6 +13,8 @@ class PhoneBookCommands(object):
         self._format = file.rsplit('.')[1]
         self._file = file
 
+        if self._format in [i[0] for i in self.query_filetypes()]:
+            print True
         self._object = filetypes.PhoneBookJSON()  # TODO: determine object to use based on the file extension
 
         if os.path.exists(self._file):
@@ -34,13 +36,7 @@ class PhoneBookCommands(object):
             if order_id in self._database:
                 del self._database[order_id]
                 database = self._database.copy()
-
-                order_id_list = [int(i) for i in database]
-                print order_id_list
-                # for i in database:
-                #     order_id_list.append(int(i))
-                order_id_list = sorted(order_id_list)
-                print order_id_list
+                order_id_list = sorted([int(i) for i in database])
 
                 for i in order_id_list:
                     index = order_id_list.index(i) + 1
@@ -69,12 +65,18 @@ class PhoneBookCommands(object):
         pass
 
     def query_filetypes(self):
-        pass
+        clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)
+        classes = [(i[1]().filetype, i[1]) for i in clsmembers]  # TODO: This would be easier to read as a dictionary
+        return classes
 
 pb = PhoneBookCommands(file="pbook.json")
-pb.remove_record(order_id="1")
+# pb.add_record("1", "asdf", "ASDFasdf")
+# pb.add_record("2", "asdf", "ASDFasdf")
+# pb.add_record("3", "asdf", "ASDFasdf")
+# pb.add_record("4", "asdf", "ASDFasdf")
+# pb.add_record("5", "asdf", "ASDFasdf")
+# pb.add_record("6", "asdf", "ASDFasdf")
+# pb.remove_record(order_id="1")
 
 # Query supported formats
-# clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)
-# print clsmembers
-# print clsmembers[2][1]().filetype
+print pb.query_filetypes()
