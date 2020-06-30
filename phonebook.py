@@ -5,6 +5,7 @@ michaelmason@live.com.au
 """
 import sys, inspect
 import filetypes
+import os
 
 _phone_book = {
     '1':
@@ -28,20 +29,28 @@ _phone_book = {
 }
 
 class PhoneBookCommands(object):
-    def __init__(self, file=None, database=None):
+    def __init__(self, file=None):
         self._database = {}
         self._format = file.rsplit('.')[1]
         self._file = file
 
         self._object = filetypes.PhoneBookJSON()
 
-        if database:
-            self._database = database
+        if os.path.exists(self._file):
+            self._database = self.retrieve_records()
 
     def add_record(self, name=None, address=None, phone=None):
-        pass
+        record = {"Name" : str(name), "Address" : str(address), "Phone" : str(phone)}
+        order_id = 1
+        if self._database:
+            order_id_list = []
+            for i in self._database:
+                order_id_list.append(int(i))
+            order = 1 + max(order_id_list)
+        self._database[str(order_id)] = record
+        self.store_records()
 
-    def remove_record(self, name=None, address=None, phone=None):
+    def remove_record(self, order_id=None):
         pass
 
     def retrieve_records(self):
@@ -60,8 +69,8 @@ class PhoneBookCommands(object):
     def convert_records(self):
         pass
 
-pb = PhoneBookCommands(file="pbook.json", database=_phone_book)
-thing = pb.store_records()
+pb = PhoneBookCommands(file="pbook.json")
+pb.add_record("mike", None, "+61 400 802 932")
 
 # Query supported formats
 # clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)

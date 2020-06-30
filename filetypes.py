@@ -41,7 +41,8 @@ class PhoneBookJSON(PhoneBookABC):
         return json_string  # return string
 
     def read_from(self, file):  # get file object
-        json.load(file)
+        data = json.load(file)
+        return data  # return data
 
 class PhoneBookCSV(PhoneBookABC):
     def __init__(self):
