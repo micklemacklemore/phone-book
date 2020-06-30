@@ -34,8 +34,15 @@ class PhoneBookCommands(object):
             if order_id in self._database:
                 del self._database[order_id]
                 database = self._database.copy()
-                for counter, order_id in enumerate(database, start=1):
-                    self._database[str(counter)] = self._database.pop(order_id)
+
+                order_id_list = []
+                for i in database:
+                    order_id_list.append(int(i))
+                order_id_list = sorted(order_id_list)
+
+                for i in order_id_list:
+                    index = order_id_list.index(i) + 1
+                    self._database[str(index)] = self._database.pop(str(i))
             else:
                 return
         self.store_records()
@@ -63,7 +70,7 @@ class PhoneBookCommands(object):
         pass
 
 pb = PhoneBookCommands(file="pbook.json")
-# pb.add_record("Mike", "109 Hawken Drive", "+61 400 702 089")
+
 pb.remove_record(order_id="1")
 
 # Query supported formats
