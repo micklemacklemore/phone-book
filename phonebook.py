@@ -13,7 +13,7 @@ class PhoneBookCommands(object):
         self._format = file.rsplit('.')[1]
         self._file = file
 
-        self._object = filetypes.PhoneBookJSON()
+        self._object = filetypes.PhoneBookJSON()  # TODO: determine object to use based on the file extension
 
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
@@ -35,17 +35,19 @@ class PhoneBookCommands(object):
                 del self._database[order_id]
                 database = self._database.copy()
 
-                order_id_list = []
-                for i in database:
-                    order_id_list.append(int(i))
+                order_id_list = [int(i) for i in database]
+                print order_id_list
+                # for i in database:
+                #     order_id_list.append(int(i))
                 order_id_list = sorted(order_id_list)
+                print order_id_list
 
                 for i in order_id_list:
                     index = order_id_list.index(i) + 1
                     self._database[str(index)] = self._database.pop(str(i))
+                self.store_records()
             else:
                 return
-        self.store_records()
 
     def retrieve_records(self):
         with open(self._file) as file:
@@ -70,7 +72,6 @@ class PhoneBookCommands(object):
         pass
 
 pb = PhoneBookCommands(file="pbook.json")
-
 pb.remove_record(order_id="1")
 
 # Query supported formats
