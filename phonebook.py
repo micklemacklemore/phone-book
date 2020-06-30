@@ -7,27 +7,6 @@ import sys, inspect
 import filetypes
 import os
 
-_phone_book = {
-    '1':
-        {
-            'Name' : "Michael Mason",
-            'Address' : "109 Hawken Drive",
-            'Number' : "0738702959"
-        },
-    '2':
-        {
-            'Name' : "Jim Barton",
-            'Address' : "653 Highland Terrace, St Lucia",
-            'Number' : "0400702089"
-        },
-    '3':
-        {
-            'Name' : "Joe Balushi",
-            'Address' : "987 Corona Street, MichaelTown",
-            'Number' : "0400702089"
-        },
-}
-
 class PhoneBookCommands(object):
     def __init__(self, file=None):
         self._database = {}
@@ -40,13 +19,13 @@ class PhoneBookCommands(object):
             self._database = self.retrieve_records()
 
     def add_record(self, name=None, address=None, phone=None):
-        record = {"Name" : str(name), "Address" : str(address), "Phone" : str(phone)}
-        order_id = 1
+        record = {"Name": str(name), "Address": str(address), "Phone": str(phone)}
+        order_id = 1  # order of records starts at 1
         if self._database:
             order_id_list = []
             for i in self._database:
                 order_id_list.append(int(i))
-            order_id = 1 + max(order_id_list)
+            order_id += max(order_id_list)
         self._database[str(order_id)] = record
         self.store_records()
 
@@ -75,6 +54,12 @@ class PhoneBookCommands(object):
         pass
 
     def convert_records(self):
+        pass
+
+    def search_records(self):
+        pass
+
+    def query_filetypes(self):
         pass
 
 pb = PhoneBookCommands(file="pbook.json")

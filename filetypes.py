@@ -18,7 +18,7 @@ class PhoneBookABC(object):
         """
         Required method for writing the phonebook dictionary to a specified format
         :param phone_book: (dict) phone book
-        :return: what is to be saved
+        :return: (str) string in specified format
         """
     @abc.abstractmethod
     def read_from(self, file):
@@ -27,6 +27,7 @@ class PhoneBookABC(object):
         :param file: pass an open file
         :return: (list) python dictionary in phoneBook format
         """
+
 
 class PhoneBookJSON(PhoneBookABC):
     def __init__(self):
@@ -42,7 +43,8 @@ class PhoneBookJSON(PhoneBookABC):
 
     def read_from(self, file):  # get file object
         data = json.load(file)
-        return data  # return data
+        return data  # return data as dictionary
+
 
 class PhoneBookCSV(PhoneBookABC):
     def __init__(self):
