@@ -116,15 +116,15 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
 if __name__ == "__main__":
     pb = PhoneBookActions("pbook.json")
-    filtered = pb.filter_records("*Mason*", filter_entry="Name")
-    print filtered
-    # pb.add_record("Michael Mason", "109 Hawken drive", "3435343243")
-    # pb.add_record("Grant Powell", "55 Downing Street, St Lucia", "+61 300 402 012")
-    # pb.add_record("Jerry Cai", "109 Hawken drive", "+61 300 402 012")
-    # pb.add_record("Michael Marston", "109 Hawken drive", "+61 300 402 012")
-    # pb.add_record("Gaby Mason", "109 Hawken drive", "+61 300 402 012")
-    # pb.add_record("David Mason", "109 Hawken drive", "+61 300 402 012")
-    # pb.add_record("James Dalziel", "109 Hawken drive", "+61 300 402 012")
+    # filtered = pb.filter_records("*Mason*", filter_entry="Name")
+    # print filtered
+    pb.add_record("Michael Mason", "109 Hawken drive", "3435343243")
+    pb.add_record("Grant Powell", "55 Downing Street, St Lucia", "+61 300 402 012")
+    pb.add_record("Jerry Cai", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael Marston", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Gaby Mason", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("David Mason", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("James Dalziel", "109 Hawken drive", "+61 300 402 012")
     # pb.convert_records("michael.csv")
     # pb.remove_record(order_id="1")
 
