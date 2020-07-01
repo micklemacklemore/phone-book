@@ -30,14 +30,13 @@ phone_book = {
 
 def main():
     # print phone_book
+    field_names = []
+    lines = []
+
     for order_id in phone_book:
         field_names = [record for record in phone_book[order_id]]
         field_names.insert(0, 'ID')
         break
-    print field_names
-
-
-    lines = []
     for order_id in phone_book:
       line = [phone_book[order_id][record] for record in phone_book[order_id]]
       line.insert(0, str(order_id))

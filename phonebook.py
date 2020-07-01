@@ -44,12 +44,12 @@ class PhoneBookCommands(object):
                 return
 
     def retrieve_records(self):
-        with open(self._file) as file:
+        with open(self._file, 'rb') as file:
             database = self._object.read_from(file)
         return database
 
     def store_records(self):
-        with open(self._file, 'w') as f:
+        with open(self._file, 'wb') as f:
             self._object.write_to(f, self._database)
 
     def display_records(self):
@@ -81,10 +81,10 @@ class PhoneBookCommands(object):
 
 if __name__ == "__main__":
     pb = PhoneBookCommands(file="pbook.csv")
-    # pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
-    pb.remove_record(order_id="1")
+    pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
+    # pb.remove_record(order_id="1")
 

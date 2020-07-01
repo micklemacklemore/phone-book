@@ -31,9 +31,25 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
         return self._filetype
 
     def write_to(self, file_output, phone_book):
-        field_names = [order_id for order_id in phone_book]
-        csv_string = None
-        return csv_string
+        field_names = []
+        lines = []
+
+        # Get the field names for first row (all dict entries)
+        for order_id in phone_book:
+            field_names = [record for record in phone_book[order_id]]
+            field_names.insert(0, 'ID')
+            break
+        # Get print line by line
+        for order_id in phone_book:
+            line = [phone_book[order_id][record] for record in phone_book[order_id]]
+            line.insert(0, str(order_id))
+            lines.append(line)
+        lines = sorted(lines)
+        csv_writer = csv.writer(file_output)
+
+        csv_writer.writerow(field_names)
+        csv_writer.writerows(lines)
+        return file_output
 
     def read_from(self, file_input):
         pass
