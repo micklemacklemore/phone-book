@@ -1,7 +1,19 @@
 import filetypes_abstract
 
+import sys
+import inspect
 import json
 import csv
+
+
+# method to query supported file types in this module
+def query_filetypes():
+    # Get available class names and classes from filetypes module
+    cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
+    classes = {}
+    for i in cls_members:
+        classes[i[1]().filetype] = i[1]  # e.g. {'json' : <PhoneBookJSON() instance>}
+    return classes
 
 
 class PhoneBookJSON(filetypes_abstract.PhoneBookABC):

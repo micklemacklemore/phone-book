@@ -24,6 +24,12 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
 
+    def _query_filetype_objects(self):
+        return supported_filetypes.filetypes.query_filetypes()
+
+    def query_filetypes(self):
+        return [i for i in self._query_filetype_objects()]
+
     # NOTE that I haven't used the literals "Name", "Address", "Phone" anywhere else in this API
     # so it's safe to add new entries. Ideally I would pass the record as a class which would
     # be more maintainable, though for the sake of keeping project in scope I left this alone.
@@ -101,34 +107,9 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
         return filtered_database
 
-    # TODO: There is probably a better way to write this?
-    def query_filetypes(self):
-        # Get available class names and classes from filetypes module
-        clsmembers = inspect.getmembers(sys.modules['supported_filetypes.filetypes'], inspect.isclass)
-        classes = {}
-        for i in clsmembers:
-            classes[i[1]().filetype] = i[1]  # e.g. {'json' : <PhoneBookJSON() instance>}
-        return classes
-
     def _create_reader_writer(self, format):
-        if format in self.query_filetypes():
-            return self.query_filetypes()[format]()
+        if format in self._query_filetype_objects():
+            return self._query_filetype_objects()[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
-
-
-if __name__ == "__main__":
-    pb = PhoneBookActions("pbook.json")
-    print pb.query_filetypes()
-    # filtered = pb.filter_records("*Mason*", filter_entry="Name")
-    # print filtered
-    pb.add_record("Michael Mason", "109 Hawken drive", "3435343243")
-    pb.add_record("Grant Powell", "55 Downing Street, St Lucia", "+61 300 402 012")
-    pb.add_record("Jerry Cai", "109 Hawken drive", "+61 300 402 012")
-    pb.add_record("Michael Marston", "109 Hawken drive", "+61 300 402 012")
-    pb.add_record("Gaby Mason", "109 Hawken drive", "+61 300 402 012")
-    pb.add_record("David Mason", "109 Hawken drive", "+61 300 402 012")
-    pb.add_record("James Dalziel", "109 Hawken drive", "+61 300 402 012")
-    # pb.convert_records("michael.csv")
-    # pb.remove_record(order_id="1")
 
