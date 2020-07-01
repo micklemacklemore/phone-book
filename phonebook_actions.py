@@ -8,9 +8,9 @@ import filetypes
 import os
 
 class PhoneBookActions(object):
-    def __init__(self, file=None):
-        self._file = file
-        self._format = file.rsplit('.')[-1]
+    def __init__(self, input_file=None):
+        self._file = input_file
+        self._format = input_file.rsplit('.')[-1]
         self._object = self._create_filetypes_object()  # determine filetype.class to use based on the file extension
         self._database = {}
 
@@ -19,7 +19,7 @@ class PhoneBookActions(object):
 
     # TODO: would be better to pass record as object rather than create a dictionary
     def add_record(self, name=None, address=None, phone=None):
-        record = {"Name": str(name), "Address": str(address), "Phone": str(phone)}
+        record = {"Name": str(name), "Address": str(address), "Phone": str(phone).replace(" ", "")}
         order_id = 1  # order of records starts at 1
         if self._database:
             order_id_list = []
@@ -55,7 +55,7 @@ class PhoneBookActions(object):
     def display_records(self):
         pass
 
-    def convert_records(self):
+    def convert_records(self, output_file):
         pass
 
     def filter_records(self):
@@ -80,12 +80,11 @@ class PhoneBookActions(object):
             raise ValueError("file extension '{}' is not supported".format(self._format))
 
 if __name__ == "__main__":
-    pass
-    # pb = PhoneBookActions(file="pbook.csv")
-    # pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
-    # pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
+    pb = PhoneBookActions("pbook.csv")
+    pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
+    pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
     # pb.remove_record(order_id="1")
 
