@@ -60,9 +60,9 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
         return data
 
 
-# class PhoneBookXML(filetypes_abstract.PhoneBookABC):
+# class PhoneBookYaml(filetypes_abstract.PhoneBookABC):
 #     def __init__(self):
-#         self._filetype = 'xml'
+#         self._filetype = 'yaml'
 #
 #     @property
 #     def filetype(self):
