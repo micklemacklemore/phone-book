@@ -8,7 +8,7 @@ import inspect
 import os
 import fnmatch
 
-import filetypes
+import supported_filetypes.filetypes
 
 
 class PhoneBookActions(object):  # TODO: figure out which methods of this class are used internally and refactor them
@@ -24,7 +24,9 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
 
-    # TODO: would be better to pass record as object rather than create a dictionary
+    # NOTE that I haven't used the literals "Name", "Address", "Phone" anywhere else in this API
+    # so it's safe to add new entries. Ideally I would pass the record as a class which would
+    # be more maintainable, though for the sake of keeping project in scope I left this alone.
     def add_record(self, name=None, address=None, phone=None):
         record = {"Name": str(name),
                   "Address": str(address),
@@ -63,7 +65,8 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         with open(self._file, 'wb') as f:
             self._reader_writer.write_to(f, self._database)
 
-    def display_records(self):
+    # TODO: I want to be able to take the _database dictionary and create a HTML formatted table with it
+    def publish_records(self):
         pass
 
     def convert_records(self, output_file):
@@ -101,7 +104,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
     # TODO: There is probably a better way to write this?
     def query_filetypes(self):
         # Get available class names and classes from filetypes module
-        clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)
+        clsmembers = inspect.getmembers(sys.modules['supported_filetypes.filetypes'], inspect.isclass)
         classes = {}
         for i in clsmembers:
             classes[i[1]().filetype] = i[1]  # e.g. {'json' : <PhoneBookJSON() instance>}
@@ -116,6 +119,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
 if __name__ == "__main__":
     pb = PhoneBookActions("pbook.json")
+    print pb.query_filetypes()
     # filtered = pb.filter_records("*Mason*", filter_entry="Name")
     # print filtered
     pb.add_record("Michael Mason", "109 Hawken drive", "3435343243")
