@@ -11,7 +11,7 @@ class PhoneBookActions(object):
     def __init__(self, input_file=None):
         self._file = input_file
         self._format = input_file.rsplit('.')[-1]
-        self._object = self._create_filetypes_object()  # determine filetype.class to use based on the file extension
+        self._object = self._create_filetypes_object(self._format)  # determine filetype.class to use based on the file extension
         self._database = {}
 
         if os.path.exists(self._file):
@@ -56,7 +56,10 @@ class PhoneBookActions(object):
         pass
 
     def convert_records(self, output_file):
-        pass
+        format = output_file.rsplit('.')[-1]
+        object = self._create_filetypes_object(format)
+        with open(output_file, 'wb') as f:
+            object.write_to(f, self._database)
 
     def filter_records(self):
         pass
@@ -73,18 +76,21 @@ class PhoneBookActions(object):
             classes[i[1]().filetype] = i[1]  # e.g. {'json' : <PhoneBookJSON() instance>}
         return classes
 
-    def _create_filetypes_object(self):
-        if self._format in self.query_filetypes():
-            return self.query_filetypes()[self._format]()
+    def _create_filetypes_object(self, format):
+        if format in self.query_filetypes():
+            return self.query_filetypes()[format]()
         else:
-            raise ValueError("file extension '{}' is not supported".format(self._format))
+            raise ValueError("file extension '{}' is not supported".format(format))
 
 if __name__ == "__main__":
     pb = PhoneBookActions("pbook.csv")
-    pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.add_record("Michael", "109 Hawken drive", "+61 300 402 012")
+    pb.convert_records("michael.json")
     # pb.remove_record(order_id="1")
 
