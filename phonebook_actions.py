@@ -80,7 +80,8 @@ class PhoneBookActions(object):
             raise ValueError("file extension '{}' is not supported".format(self._format))
 
 if __name__ == "__main__":
-    pb = PhoneBookActions(file="pbook.csv")
+    pass
+    # pb = PhoneBookActions(file="pbook.csv")
     # pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
     # pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
     # pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
