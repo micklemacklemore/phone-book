@@ -9,14 +9,15 @@ import os
 
 class PhoneBookCommands(object):
     def __init__(self, file=None):
-        self._file = file  # TODO: make the file extension not case sensitive?
+        self._file = file
         self._format = file.rsplit('.')[-1]
-        self._object = self._create_filetypes_object()
+        self._object = self._create_filetypes_object()  # determine filetype.class to use based on the file extension
         self._database = {}
 
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
 
+    # TODO: would be better to pass record as object rather than create a dictionary
     def add_record(self, name=None, address=None, phone=None):
         record = {"Name": str(name), "Address": str(address), "Phone": str(phone)}
         order_id = 1  # order of records starts at 1
@@ -48,9 +49,8 @@ class PhoneBookCommands(object):
         return database
 
     def store_records(self):
-        string = self._object.write_to(self._database)
-        with open(self._file, 'w') as file:
-            file.writelines(string)
+        with open(self._file, 'w') as f:
+            self._object.write_to(f, self._database)
 
     def display_records(self):
         pass
@@ -64,11 +64,13 @@ class PhoneBookCommands(object):
     def change_records(self, order_id):
         pass
 
+    # TODO: There is probably a better way to write this?
     def query_filetypes(self):
+        # Get available class names and classes from filetypes module
         clsmembers = inspect.getmembers(sys.modules['filetypes'], inspect.isclass)
         classes = {}
         for i in clsmembers:
-            classes[i[1]().filetype] = i[1]
+            classes[i[1]().filetype] = i[1]  # e.g. {'json' : <PhoneBookJSON() instance>}
         return classes
 
     def _create_filetypes_object(self):
@@ -77,12 +79,12 @@ class PhoneBookCommands(object):
         else:
             raise ValueError("file extension '{}' is not supported".format(self._format))
 
-pb = PhoneBookCommands(file="pbook.json")
-# pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
-# pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
-# pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
-# pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
-# pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
-# pb.remove_record(order_id="1")
+if __name__ == "__main__":
+    pb = PhoneBookCommands(file="pbook.csv")
+    # pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
+    pb.remove_record(order_id="1")
 
-# Query supported formats
