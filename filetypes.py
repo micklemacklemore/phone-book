@@ -60,16 +60,16 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
         return data
 
 
-class PhoneBookXML(filetypes_abstract.PhoneBookABC):
-    def __init__(self):
-        self._filetype = 'xml'
-
-    @property
-    def filetype(self):
-        return self._filetype
-
-    def write_to(self, file_output, phone_book):
-        pass
-
-    def read_from(self, file_input):
-        pass
+# class PhoneBookXML(filetypes_abstract.PhoneBookABC):
+#     def __init__(self):
+#         self._filetype = 'xml'
+#
+#     @property
+#     def filetype(self):
+#         return self._filetype
+#
+#     def write_to(self, file_output, phone_book):
+#         pass
+#
+#     def read_from(self, file_input):
+#         pass
