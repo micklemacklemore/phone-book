@@ -39,14 +39,14 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
             field_names = [record for record in phone_book[order_id]]
             field_names.insert(0, 'ID')
             break
-        # Get print line by line
+        # Get every record as a list
         for order_id in phone_book:
             line = [phone_book[order_id][record] for record in phone_book[order_id]]
             line.insert(0, int(order_id))
             lines.append(line)
         lines = sorted(lines)
+        # Write to file using csv writer
         csv_writer = csv.writer(file_output)
-
         csv_writer.writerow(field_names)
         csv_writer.writerows(lines)
         return file_output
@@ -58,6 +58,7 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
             data[line['ID']] = line.copy()
             data[line['ID']].pop('ID')
         return data
+
 
 class PhoneBookXML(filetypes_abstract.PhoneBookABC):
     def __init__(self):
