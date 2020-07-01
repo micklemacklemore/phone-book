@@ -42,7 +42,7 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
         # Get print line by line
         for order_id in phone_book:
             line = [phone_book[order_id][record] for record in phone_book[order_id]]
-            line.insert(0, str(order_id))
+            line.insert(0, int(order_id))
             lines.append(line)
         lines = sorted(lines)
         csv_writer = csv.writer(file_output)
@@ -52,7 +52,12 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
         return file_output
 
     def read_from(self, file_input):
-        pass
+        data = {}
+        csv_reader = csv.DictReader(file_input)
+        for line in csv_reader:
+            data[line['ID']] = line.copy()
+            data[line['ID']].pop('ID')
+        return data
 
 class PhoneBookXML(filetypes_abstract.PhoneBookABC):
     def __init__(self):

@@ -81,10 +81,10 @@ class PhoneBookCommands(object):
 
 if __name__ == "__main__":
     pb = PhoneBookCommands(file="pbook.csv")
-    pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
-    pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
+    # pb.add_record("Michael Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("Gaby Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("David Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("Jeremy Mason", "109 Hawken Drive", "+61 400 702 089")
+    # pb.add_record("James Dalziel", "231 Wayland Terrace", "+38 102 039 209")
     # pb.remove_record(order_id="1")
 
