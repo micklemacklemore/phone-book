@@ -29,13 +29,18 @@ phone_book = {
   }
 }
 
-search_type = "Name"
 
-for record in phone_book:
-    if search_type == "All":
-        for record_type in phone_book[record]:
-            to_match =  phone_book[record][record_type]
-            print fnmatch.fnmatch(to_match, "*Hawken*")
-    if search_type == "Name":
-        to_match = phone_book[record]["Name"]
-        print fnmatch.fnmatch(to_match, "*Dalziel")
+if __name__ == "__main__":
+    search_type = "All"
+
+    for record in phone_book:
+        if search_type == "All":
+            for record_type in phone_book[record]:
+                entry = phone_book[record][record_type]
+                to_match = phone_book[record][record_type]
+                is_matched = fnmatch.fnmatch(to_match, "*Mason")
+                if is_matched == True:
+                    print {record: phone_book[record]}
+        if search_type == "Name":
+            to_match = phone_book[record]["Name"]
+            print fnmatch.fnmatch(to_match, "*Dalziel")
