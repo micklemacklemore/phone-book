@@ -20,8 +20,7 @@ def parse_args():
     # arguments are mutually exclusive. I'd like to be able to use sub-commands like git.
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-ls", "--list", help="list records", action='store_true')
-    group.add_argument("-a", "--add", nargs=3, help="add record containing name, address and phone number",
-                        metavar=('NAME', 'ADDRESS', 'PHONE'))
+    group.add_argument("-a", "--add", nargs="*", help="add record containing name, address and phone number")
     group.add_argument("-rm", "--remove", help="remove record by number ID", metavar="ID_NUMBER")
     group.add_argument("-f", "--filter", help="filter records by unix-style wildcards. e.g. \"name=Joe*\"",
                        metavar="<TYPE>=<WILDCARD>")
@@ -41,8 +40,23 @@ def parse_args():
         pass
 
     if args.add:
-        pb.add_record(name=args.add[0], address=args.add[1], phone=args.add[2])
-        print "record added: {}".format(args.add)
+        if len(args.add) != 3:
+            if len(args.add) < 3:
+                print "phonebook: error: Too few values. Please enter name, address and then phone number"
+                return
+            elif len(args.add) > 3:
+                print "phonebook: error: Too many values. Please enter name, address and then phone number"
+                return
+        id, result = pb.add_record(name=args.add[0], address=args.add[1], phone=args.add[2])
+        print "added:", id, ":",  result
+
+    elif args.add is not None:
+        name = raw_input("name : ")
+        address = raw_input("address : ")
+        phone = raw_input("phone number : ")
+
+        id, result = pb.add_record(name, address, phone)
+        print "added:", id, ":", result
 
     if args.remove:
         removed = pb.remove_record(args.remove)

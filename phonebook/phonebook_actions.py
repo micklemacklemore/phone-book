@@ -48,11 +48,12 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             self._database = {}
         self._database[str(order_id)] = record
         self.store_records()
+        return order_id, self._database[str(order_id)]
 
     def remove_record(self, order_id):
         if self._database:
             if order_id not in self._database:
-                return False
+                return
             removed = self._database.copy()[order_id]
             del self._database[order_id]
             database = self._database.copy()
@@ -63,7 +64,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             self.store_records()
             return removed
         else:
-            return False
+            return
 
     def retrieve_records(self):
         with open(self._file, 'rb') as file:
@@ -80,9 +81,28 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
     def list_records(self, database=None):
         if not database:
-            database = self._database
-        record_list = []
-        return record_list
+            if not self._database:
+                return
+            database = self._database.copy()
+
+        lines = []
+        for order_id in database:
+            field_names = [record for record in database[order_id]]
+            field_names.insert(0, 'ID')
+            break
+        # Get every record as a list
+        for order_id in database:
+            line = [database[order_id][record] for record in database[order_id]]
+            line.insert(0, int(order_id))
+            lines.append(line)
+        lines = sorted(lines)
+
+        dash = '-' * 73
+        string = "{:<8} {:<15} {:<20} {:<30}\n".format(*field_names)
+        string += dash
+        for i in lines:
+            string += ("\n{:<8} {:<15} {:<20} {:<30}".format(*i))
+        return string
 
     def convert_records(self, output_file):
         if not self._database:
@@ -122,3 +142,10 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             return filetypes[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
+
+if __name__ == "__main__":
+    pb = PhoneBookActions("../pbook.json")
+    header = ["ID", "Phone", "Name", "Address"]
+    data = pb.list_records()
+    print data
+
