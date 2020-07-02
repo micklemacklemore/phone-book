@@ -35,9 +35,9 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
     # May have been better to create a record class instead of a dictionary, for extendability
     def add_record(self, name=None, address=None, phone=None):
-        record = {"Name": str(name),
-                  "Address": str(address),
-                  "Phone": str(phone).replace(" ", "")}
+        record = {"name": str(name),
+                  "address": str(address),
+                  "phone": str(phone).replace(" ", "")}
         order_id = 1  # order of records starts at 1
         if self._database:
             order_id_list = []
@@ -85,6 +85,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
                 return
             database = self._database.copy()
 
+        field_names = []
         lines = []
         for order_id in database:
             field_names = [record for record in database[order_id]]
@@ -97,11 +98,10 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             lines.append(line)
         lines = sorted(lines)
 
-        dash = '-' * 73
-        string = "{:<8} {:<15} {:<20} {:<30}\n".format(*field_names)
-        string += dash
+        # TODO: format these strings based on maximum possible length of a string
+        string = "\n{:<8} {:<15} {:<30} {:<30}".format(*field_names)
         for i in lines:
-            string += ("\n{:<8} {:<15} {:<20} {:<30}".format(*i))
+            string += ("\n{:<8} {:<15} {:<30} {:<30}".format(*i))
         return string
 
     def convert_records(self, output_file):
@@ -112,7 +112,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         with open(output_file, 'wb') as f:
             reader_writer.write_to(f, self._database)
 
-    def filter_records(self, filter, filter_entry=None):
+    def filter_records(self, filter_string, filter_entry=None):
         if not self._database:
             return
         filtered_database = {}
@@ -122,7 +122,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             for record in database:
                 for record_type in database[record]:
                     to_match = database[record][record_type]
-                    is_matched = fnmatch.fnmatch(to_match, filter)
+                    is_matched = fnmatch.fnmatch(to_match, filter_string)
                     if is_matched:
                         filtered_database[record] = database[record]
         else:
@@ -130,7 +130,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
                 if filter_entry not in database[record]:
                     return
                 to_match = database[record][filter_entry]
-                is_matched = fnmatch.fnmatch(to_match, filter)
+                is_matched = fnmatch.fnmatch(to_match, filter_string)
                 if is_matched:
                     filtered_database[record] = database[record]
 
@@ -142,10 +142,3 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             return filetypes[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
-
-if __name__ == "__main__":
-    pb = PhoneBookActions("../pbook.json")
-    header = ["ID", "Phone", "Name", "Address"]
-    data = pb.list_records()
-    print data
-

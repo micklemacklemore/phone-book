@@ -20,10 +20,11 @@ def parse_args():
     # arguments are mutually exclusive. I'd like to be able to use sub-commands like git.
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-ls", "--list", help="list records", action='store_true')
-    group.add_argument("-a", "--add", nargs="*", help="add record containing name, address and phone number")
+    group.add_argument("-a", "--add", nargs=3, help="add record containing name, address and phone number",
+                       metavar=('NAME', 'ADDRESS', 'PHONE'))
     group.add_argument("-rm", "--remove", help="remove record by number ID", metavar="ID_NUMBER")
     group.add_argument("-f", "--filter", help="filter records by unix-style wildcards. e.g. \"name=Joe*\"",
-                       metavar="<TYPE>=<WILDCARD>")
+                       metavar="<TYPE>=<EXPRESSION>")
     group.add_argument('-c', "--convert", help="convert phonebook to another supported format. e.g. \"pbook.csv\"",
                        metavar="FILE")
     group.add_argument("-p", "--publish", help="save phonebook as fancy HTML table", action='store_true')
@@ -37,26 +38,19 @@ def parse_args():
             pb.store_records()
 
     if args.list:
-        pass
+        print pb.list_records(pb.database)
 
     if args.add:
-        if len(args.add) != 3:
-            if len(args.add) < 3:
-                print "phonebook: error: Too few values. Please enter name, address and then phone number"
-                return
-            elif len(args.add) > 3:
-                print "phonebook: error: Too many values. Please enter name, address and then phone number"
-                return
-        id, result = pb.add_record(name=args.add[0], address=args.add[1], phone=args.add[2])
-        print "added:", id, ":",  result
+        order_id, result = pb.add_record(name=args.add[0], address=args.add[1], phone=args.add[2])
+        print "added:", order_id, ":",  result
 
     elif args.add is not None:
         name = raw_input("name : ")
         address = raw_input("address : ")
         phone = raw_input("phone number : ")
 
-        id, result = pb.add_record(name, address, phone)
-        print "added:", id, ":", result
+        order_id, result = pb.add_record(name, address, phone)
+        print "added:", order_id, ":", result
 
     if args.remove:
         removed = pb.remove_record(args.remove)
@@ -64,11 +58,26 @@ def parse_args():
             print "record removed: {}".format(removed)
 
     if args.filter:
-        pass
+        if args.filter.count('=') == 1:
+            filter_entry, filter_string = args.filter.split('=')
+            if filter_entry.lower() == "all":
+                filtered_database = pb.filter_records(filter_string)
+                if filtered_database:
+                    print pb.list_records(filtered_database)
+                return
+            filtered_database = pb.filter_records(filter_string, filter_entry.lower())
+            if filtered_database:
+                print pb.list_records(filtered_database)
+            return
+        elif args.filter.count('=') != 1:
+            print "phonebook: error: incorrect use of filter command. use: <entry type>=<search expression>\n"
+            print "e.g. phonebook pbook.json --filter name=Michael*"
+            return
 
     if args.convert:
         try:
             pb.convert_records(args.convert)
+            print "writing to file: {}".format(args.convert)
         except ValueError:
             print "phonebook: error: {} is not a supported file format".format(args.convert.rsplit('.')[-1])
 
