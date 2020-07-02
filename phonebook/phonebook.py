@@ -18,6 +18,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description=help_description(), formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("file", help="specify the name of the phonebook file e.g. \"pbook.json\"")
 
+    # Made all arguments mutually exclusive. I'd like to be able to use sub-commands like git.
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-ls", "--list", help="list records", action='store_true')
     group.add_argument("-a", "--add", nargs=3, help="add record containing name, address and phone number",
@@ -29,9 +30,6 @@ def parse_args():
                        metavar="FILE")
     group.add_argument("-p", "--publish", help="save phonebook as fancy HTML table", action='store_true')
 
-
-
-    # group.add_argument("--publish")
     args = parser.parse_args()
 
     pb = PhoneBookActions(args.file)
