@@ -35,9 +35,12 @@ class TestPhoneBookActions(unittest.TestCase):
             self.assertDictEqual(self.pb_types[i].database["1"], {"name": "Michael Mason", "address": "109 Hawken Drive", "phone": "+61400702089"})
 
         for i in self.pb_types:
-            for id in range(1, 10):
+            for id in range(1, 9):
                 self.pb_types[i].remove_record("1")
-            self.assertEqual(self.pb_types[i].database, {})
+
+            # Test that the last record in the database is now the first record after deleting 9 records
+            self.assertEqual(self.pb_types[i].database,
+                             {'1': {'address': '109 Hawken Drive', 'name': 'Randal Stevens', 'phone': '614993838423'}})
 
 
 if __name__ == "__main__":
