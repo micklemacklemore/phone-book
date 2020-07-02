@@ -24,11 +24,16 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
 
-    def _query_filetype_objects(self):
-        return supported_filetypes.filetypes.query_filetypes()
+    @property
+    def file(self):
+        return self._file
+
+    @property
+    def database(self):
+        return self._database
 
     def query_filetypes(self):
-        return [i for i in self._query_filetype_objects()]
+        return [i for i in supported_filetypes.filetypes.query_filetypes()]
 
     # NOTE that I haven't used the literals "Name", "Address", "Phone" anywhere else in this API
     # so it's safe to add new entries. Ideally I would pass the record as a class which would
@@ -108,8 +113,9 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         return filtered_database
 
     def _create_reader_writer(self, format):
-        if format in self._query_filetype_objects():
-            return self._query_filetype_objects()[format]()
+        filetypes = supported_filetypes.filetypes.query_filetypes()
+        if format in filetypes:
+            return filetypes[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
 

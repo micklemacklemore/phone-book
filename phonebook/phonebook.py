@@ -1,6 +1,8 @@
 import supported_filetypes.filetypes
 from phonebook_actions import PhoneBookActions
+
 import argparse
+import os
 
 def help_description():
     description = "phone book command-line by Michael Mason.\n\n" \
@@ -15,7 +17,14 @@ def help_description():
 def parse_args():
     parser = argparse.ArgumentParser(description=help_description(), formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("file", help="specify the name of the phonebook file e.g. pbook.json")
+    parser.add_argument("-a", "--add-record", help="add record containing name, address and phonenumber")
     args = parser.parse_args()
-    print args.echo
-    # parser.add_argument('-f', '--file', type=str, metavar='', required=True, help='save to this file')
-    # pb = PhoneBookActions(args.file)
+
+    pb = PhoneBookActions(args.file)
+    if not pb.database:
+        if not os.path.exists(pb.file):
+            print "saving new file: {}".format(args.file)
+            pb.store_records()
+
+    if args.add_record:
+        print "you added a record: {}".format(args.add_record)
