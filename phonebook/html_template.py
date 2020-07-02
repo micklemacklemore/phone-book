@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+# https://www.w3schools.com/howto/howto_js_filter_table.asp Used HTML from this website to use as my template for
+# publishing my htmls
+
+template_top = """<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -45,50 +48,10 @@
 
 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 
-<table id="myTable">
-<tr class="header">
-<th style="width:20%;">Phone</th>
-<th style="width:20%;">Name</th>
-<th style="width:20%;">Address</th>
-</tr>
-<tr>
-<td>0400332089</td>
-<td>David Mason</td>
-<td>139 Behae Street</td>
-<tr>
-<tr>
-<td>0400343089</td>
-<td>Big Bird</td>
-<td>123 Sesame Street</td>
-<tr>
-<tr>
-<td>0400343089</td>
-<td>Joe Dalziel</td>
-<td>123 Sesame Street</td>
-<tr>
-<tr>
-<td>0400702089</td>
-<td>Gaby Mason</td>
-<td>109 Hawk Street</td>
-<tr>
-<tr>
-<td>0738702959</td>
-<td>Michael Mason</td>
-<td>109 Hawken Drive, St Lucia</td>
-<tr>
-<tr>
-<td>23489934</td>
-<td>Michael Jackson</td>
-<td>Elka Avenue</td>
-<tr>
-<tr>
-<td>38702959</td>
-<td>Michael Jackson</td>
-<td>109 Hawken Drive</td>
-<tr>
-</table>
+"""
 
-<script>
+
+template_bottom = """<script>
 function myFunction() {
   var input, filter, table, tr, td, i, txtValue;
   input = document.getElementById("myInput");
@@ -111,3 +74,4 @@ function myFunction() {
 
 </body>
 </html>
+"""

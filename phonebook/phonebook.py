@@ -82,5 +82,7 @@ def parse_args():
             print "phonebook: error: {} is not a supported file format".format(args.convert.rsplit('.')[-1])
 
     if args.publish:
-        pass
+        result = pb.publish_records()
+        if result:
+            print "saving new file: {}".format(result)
 

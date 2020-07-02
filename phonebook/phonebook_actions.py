@@ -7,6 +7,7 @@ import os
 import fnmatch
 
 import supported_filetypes.filetypes
+import html_template
 
 
 class PhoneBookActions(object):  # TODO: figure out which methods of this class are used internally and refactor them
@@ -77,7 +78,44 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
     # TODO: I want to be able to take the _database dictionary and create a HTML formatted table with it
     def publish_records(self):
-        pass
+        if not self._database:
+            return
+        database = self._database.copy()
+        field_names = []
+        lines = []
+        html_output = self._file.rsplit('.', 1)[0] + '_published.html'  # html published file will save where ever the phonebook is
+        html = ""
+        html_table = "<table id=\"myTable\">\n" \
+                     "<tr class=\"header\">\n"
+        # Get field names
+        for order_id in database:
+            field_names = [record.capitalize() for record in database[order_id]]
+            # field_names.insert(0, 'ID')
+            break
+        # Get every record as a list
+        for order_id in database:
+            line = [database[order_id][record] for record in database[order_id]]
+            # line.insert(0, int(order_id))
+            lines.append(line)
+        lines = sorted(lines)
+
+        for field in field_names:
+            html_table += "<th style=\"width:20%;\">{}</th>\n".format(str(field))
+        html_table += "</tr>\n"
+        for line in lines:
+            html_table += "<tr>\n"
+            for entry in line:
+                html_table += "<td>{}</td>\n".format(str(entry))
+            html_table += "<tr>\n"
+        html_table += "</table>\n\n"
+
+        html += html_template.template_top
+        html += html_table
+        html += html_template.template_bottom
+
+        with open(html_output, 'wb') as f:
+            f.write(html)
+        return html_output
 
     def list_records(self, database=None):
         if not database:
@@ -142,3 +180,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             return filetypes[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
+
+if __name__ == "__main__":
+    pb = PhoneBookActions("../pbook.json")
+    pb.publish_records()
