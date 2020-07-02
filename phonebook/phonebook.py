@@ -1,12 +1,21 @@
+import supported_filetypes.filetypes
 from phonebook_actions import PhoneBookActions
 import argparse
 
-# TODO: write a commandline args parser
+def help_description():
+    description = "phone book command-line by Michael Mason.\n\n" \
+                  "supported file types:"
+    filetypes = [i for i in supported_filetypes.filetypes.query_filetypes()]
+    for filetype in filetypes:
+        description += "\n{}".format(filetype)
 
-parser = argparse.ArgumentParser(description='Phonebook commandline by Michael Mason')
-parser.add_argument('-f','--file', type=str, metavar='', required=True, help='save to this file')
-# parser.add_argument('-n', )
-args = parser.parse_args()
+    return description
+
 
 def parse_args():
-    pb = PhoneBookActions(args.file)
+    parser = argparse.ArgumentParser(description=help_description(), formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument("file", help="specify the name of the phonebook file e.g. pbook.json")
+    args = parser.parse_args()
+    print args.echo
+    # parser.add_argument('-f', '--file', type=str, metavar='', required=True, help='save to this file')
+    # pb = PhoneBookActions(args.file)

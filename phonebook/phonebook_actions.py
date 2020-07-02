@@ -13,10 +13,10 @@ import supported_filetypes.filetypes
 
 class PhoneBookActions(object):  # TODO: figure out which methods of this class are used internally and refactor them
 
-    def __init__(self, input_file=None):
+    def __init__(self, input_file):
 
         self._file = input_file
-        self._format = input_file.rsplit('.')[-1]
+        self._format = self._format = input_file.rsplit('.')[-1]
         # determine filetype.class to use based on the file extension
         self._reader_writer = self._create_reader_writer(self._format)
         self._database = None
