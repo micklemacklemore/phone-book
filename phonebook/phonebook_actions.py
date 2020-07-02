@@ -180,7 +180,3 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             return filetypes[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
-
-if __name__ == "__main__":
-    pb = PhoneBookActions("../pbook.json")
-    pb.publish_records()
