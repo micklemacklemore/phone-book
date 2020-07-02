@@ -3,8 +3,6 @@
 27/06/2020
 michaelmason@live.com.au
 """
-import sys
-import inspect
 import os
 import fnmatch
 
