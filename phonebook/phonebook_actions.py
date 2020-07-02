@@ -10,16 +10,19 @@ import supported_filetypes.filetypes
 import html_template
 
 
-class PhoneBookActions(object):  # TODO: figure out which methods of this class are used internally and refactor them
+# Kicking myself for not using
+class PhoneBookActions(object):
 
     def __init__(self, input_file):
-
+        # determine file and file extension if there is one
         self._file = input_file
         self._format = self._format = input_file.rsplit('.')[-1]
-        # determine filetype.class to use based on the file extension
+
+        # determine what filetypes.class to use based on the file extension
         self._reader_writer = self._create_reader_writer(self._format)
         self._database = None
 
+        # retrieve existing records
         if os.path.exists(self._file):
             self._database = self.retrieve_records()
 
@@ -34,7 +37,9 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
     def query_filetypes(self):
         return [i for i in supported_filetypes.filetypes.query_filetypes()]
 
-    # May have been better to create a record class instead of a dictionary, for extendability
+    # May have been better to create a record class instead of a dictionary, for extendability, and also for the ability
+    # to order the damn entries! Curse you python 2 and your un-ordered dictionary! Hmm well I guess I could have at
+    # least used an orderedDict...
     def add_record(self, name=None, address=None, phone=None):
         record = {"name": str(name),
                   "address": str(address),
@@ -76,7 +81,6 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
         with open(self._file, 'wb') as f:
             self._reader_writer.write_to(f, self._database)
 
-    # TODO: I want to be able to take the _database dictionary and create a HTML formatted table with it
     def publish_records(self):
         if not self._database:
             return

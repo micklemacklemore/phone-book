@@ -15,19 +15,21 @@ def help_description():
 
 def parse_args():
     parser = argparse.ArgumentParser(description=help_description(), formatter_class=argparse.RawTextHelpFormatter)
+
     parser.add_argument("file", help="specify the name of the phonebook file e.g. \"pbook.json\"")
 
-    # arguments are mutually exclusive. I'd like to be able to use sub-commands like git.
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-ls", "--list", help="list records", action='store_true')
-    group.add_argument("-a", "--add", nargs=3, help="add record containing name, address and phone number",
+    # sub-arguments
+    sub_commands = parser.add_mutually_exclusive_group()
+    sub_commands.add_argument("-q", "--query", help="query supported file types", action='store_true')
+    sub_commands.add_argument("-ls", "--list", help="list records", action='store_true')
+    sub_commands.add_argument("-a", "--add", nargs=3, help="add record containing name, address and phone number",
                        metavar=('NAME', 'ADDRESS', 'PHONE'))
-    group.add_argument("-rm", "--remove", help="remove record by number ID", metavar="ID_NUMBER")
-    group.add_argument("-f", "--filter", help="filter records by unix-style wildcards. e.g. \"name=Joe*\"",
+    sub_commands.add_argument("-rm", "--remove", help="remove record by number ID", metavar="ID_NUMBER")
+    sub_commands.add_argument("-f", "--filter", help="filter records by unix-style wildcards. e.g. \"name=Joe*\"",
                        metavar="<TYPE>=<EXPRESSION>")
-    group.add_argument('-c', "--convert", help="convert phonebook to another supported format. e.g. \"pbook.csv\"",
+    sub_commands.add_argument('-c', "--convert", help="convert phonebook to another supported format. e.g. \"pbook.csv\"",
                        metavar="FILE")
-    group.add_argument("-p", "--publish", help="save phonebook as fancy HTML table", action='store_true')
+    sub_commands.add_argument("-p", "--publish", help="save phonebook as fancy HTML table", action='store_true')
 
     args = parser.parse_args()
 
@@ -36,6 +38,12 @@ def parse_args():
         if not os.path.exists(pb.file):
             print "saving new file: {}".format(args.file)
             pb.store_records()
+
+    if args.query:
+        query = ""
+        for i in pb.query_filetypes():
+            query += i + " "
+        print query
 
     if args.list:
         print pb.list_records(pb.database)
