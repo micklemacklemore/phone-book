@@ -1,24 +1,45 @@
 # phone-book
-A simple Python module that's designed to take a set of personal data and store it in various formats
+A simple Python module that's designed to take a set of personal data and store it in various formats.
+It has a command-line tool that can be run from the root of this directory
 
-## project brief 
-#### In Python or C++ write a module or small library which shows how you would take a set of personal data, where each record contains:
+#####Requires: Python 2.7
+#####Currently supports serialisation in:
 
-- name
-- address
-- phone number
+- JSON
+- CSV
 
-#### And:
+System to support additonal file formats is easily extendable
 
-- build a simple API allowing you to add new records
-- filter users (e.g "name=Joe*") based on some simple search syntax like Glob.
-- support serialisation in 2 or more formats (e.g JSON, Yaml, XML, CSV etc)
-- Display the data in 2 or more different output formats (no need to use a GUI Framework, use e.g text output/HTML or any other human readable format).
-- Add a command line interface to add records, and display/convert/filter the whole data set
-- Write it in such a way that it would be easy for a developer to extend the system e.g:
-  - to add support for additional storage formats
-  - to query a list of currently supported formats
   
-We like to see your approach, methods and technologies you used.  We'd expect you to describe any problems or pitfalls 
-you expected, and how you overcome them. We primarily use the technical task as a starting ground for a technical 
-interview, as well as gauge coding expertise. 
+## Usage
+###Help
+    $ python phonebook -h
+Note that you can query a list of the supported file types through the help command 
+    
+###Add record (Name, Address, Phone Number)
+    $ python phonebook pbook.json -a "Michael Mason" "109 Gregory Drive" "+61400702089"
+
+###Remove record
+Delete record using it's number ID
+
+    $ python phonebook pbook.json -rm 1
+
+###List records
+    $ python phonebook pbook.json -ls
+
+###Filter records
+    $ python phonebook pbook.json -f name=*Mason
+    $ python phonebook pbook.json -f address="??? Gregory Drive"
+    $ python phonebook pbook.json -f number=+[1-6]1400*
+
+###Publish records
+Takes existing records and formats them into a fancy-lookin', human readable and filterable HTML table
+
+    $ python phonebook pbook.json -p
+
+###Convert records
+    $ python phonebook pbook.json -c pbook.csv
+
+###Query supported file types
+    $ python phonebook pbook.json -q
+    
