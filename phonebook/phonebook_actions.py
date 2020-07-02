@@ -35,9 +35,7 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
     def query_filetypes(self):
         return [i for i in supported_filetypes.filetypes.query_filetypes()]
 
-    # NOTE that I haven't used the literals "Name", "Address", "Phone" anywhere else in this API
-    # so it's safe to add new entries. Ideally I would pass the record as a class which would
-    # be more maintainable, though for the sake of keeping project in scope I left this alone.
+    # May have been better to create a record class instead of a dictionary, for extendability
     def add_record(self, name=None, address=None, phone=None):
         record = {"Name": str(name),
                   "Address": str(address),
@@ -55,17 +53,19 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
     def remove_record(self, order_id):
         if self._database:
-            if order_id in self._database:
-                del self._database[order_id]
-                database = self._database.copy()
-                order_id_list = sorted([int(i) for i in database])
-
-                for i in order_id_list:
-                    index = order_id_list.index(i) + 1
-                    self._database[str(index)] = self._database.pop(str(i))
-                self.store_records()
-            else:
-                return
+            if order_id not in self._database:
+                return False
+            removed = self._database.copy()[order_id]
+            del self._database[order_id]
+            database = self._database.copy()
+            order_id_list = sorted([int(i) for i in database])
+            for i in order_id_list:
+                index = order_id_list.index(i) + 1
+                self._database[str(index)] = self._database.pop(str(i))
+            self.store_records()
+            return removed
+        else:
+            return False
 
     def retrieve_records(self):
         with open(self._file, 'rb') as file:
@@ -78,6 +78,9 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
 
     # TODO: I want to be able to take the _database dictionary and create a HTML formatted table with it
     def publish_records(self):
+        pass
+
+    def list_records(self):
         pass
 
     def convert_records(self, output_file):

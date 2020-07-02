@@ -10,7 +10,6 @@ def help_description():
     filetypes = [i for i in supported_filetypes.filetypes.query_filetypes()]
     for filetype in filetypes:
         description += "\n{}".format(filetype)
-
     return description
 
 
@@ -18,7 +17,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description=help_description(), formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("file", help="specify the name of the phonebook file e.g. \"pbook.json\"")
 
-    # Made all arguments mutually exclusive. I'd like to be able to use sub-commands like git.
+    # arguments are mutually exclusive. I'd like to be able to use sub-commands like git.
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-ls", "--list", help="list records", action='store_true')
     group.add_argument("-a", "--add", nargs=3, help="add record containing name, address and phone number",
@@ -38,5 +37,27 @@ def parse_args():
             print "saving new file: {}".format(args.file)
             pb.store_records()
 
+    if args.list:
+        pass
+
     if args.add:
+        pb.add_record(name=args.add[0], address=args.add[1], phone=args.add[2])
         print "record added: {}".format(args.add)
+
+    if args.remove:
+        removed = pb.remove_record(args.remove)
+        if removed:
+            print "record removed: {}".format(removed)
+
+    if args.filter:
+        pass
+
+    if args.convert:
+        try:
+            pb.convert_records(args.convert)
+        except ValueError:
+            print "phonebook: error: {} is not a supported file format".format(args.convert.rsplit('.')[-1])
+
+    if args.publish:
+        pass
+
