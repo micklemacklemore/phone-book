@@ -80,8 +80,11 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
     def publish_records(self):
         pass
 
-    def list_records(self):
-        pass
+    def list_records(self, database=None):
+        if not database:
+            database = self._database
+        record_list = []
+        return record_list
 
     def convert_records(self, output_file):
         if not self._database:
@@ -121,4 +124,3 @@ class PhoneBookActions(object):  # TODO: figure out which methods of this class 
             return filetypes[format]()
         else:
             raise ValueError("file extension '{}' is not supported".format(format))
-
