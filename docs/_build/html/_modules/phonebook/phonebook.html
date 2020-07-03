@@ -1,0 +1,188 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>phonebook.phonebook &#8212; phone-book 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">phone-book 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for phonebook.phonebook</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    phonebook.py</span>
+<span class="sd">    ------------</span>
+
+<span class="sd">    This module contains the commandline parsing stuff.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">supported_filetypes.filetypes</span>
+<span class="kn">from</span> <span class="nn">phonebook_actions</span> <span class="kn">import</span> <span class="n">PhoneBookActions</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="help_description"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook.help_description">[docs]</a><span class="k">def</span> <span class="nf">help_description</span><span class="p">():</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;phone book command-line by Michael Mason.</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+                  <span class="s2">&quot;supported file types:&quot;</span>
+    <span class="n">filetypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">supported_filetypes</span><span class="o">.</span><span class="n">filetypes</span><span class="o">.</span><span class="n">query_filetypes</span><span class="p">()]</span>
+    <span class="k">for</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="n">filetypes</span><span class="p">:</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">description</span></div>
+
+<span class="c1"># Ideally I would use a gang of four command strategy here, but for the sake of time / scope,</span>
+<span class="c1"># it was easier just to keep the commandline argument stuff in one file like this. Would be</span>
+<span class="c1"># too much complication for this little tool anyway.</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">help_description</span><span class="p">(),</span> <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawTextHelpFormatter</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify the name of the phonebook file e.g. </span><span class="se">\&quot;</span><span class="s2">pbook.json</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># sub-arguments</span>
+    <span class="n">sub_commands</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">()</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--query&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;query supported file types&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-ls&quot;</span><span class="p">,</span> <span class="s2">&quot;--list&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;list records&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--add&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;add record containing name, address and phone number&quot;</span><span class="p">,</span>
+                       <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">,</span> <span class="s1">&#39;ADDRESS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHONE&#39;</span><span class="p">))</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-rm&quot;</span><span class="p">,</span> <span class="s2">&quot;--remove&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;remove record by number ID&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;ID_NUMBER&quot;</span><span class="p">)</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--filter&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;filter records by unix-style wildcards. e.g. </span><span class="se">\&quot;</span><span class="s2">name=Joe*</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+                       <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;&lt;TYPE&gt;=&lt;EXPRESSION&gt;&quot;</span><span class="p">)</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s2">&quot;--convert&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;convert phonebook to another supported format. e.g. </span><span class="se">\&quot;</span><span class="s2">pbook.csv</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+                       <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">)</span>
+    <span class="n">sub_commands</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--publish&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;save phonebook as fancy HTML table&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">pb</span> <span class="o">=</span> <span class="n">PhoneBookActions</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pb</span><span class="o">.</span><span class="n">database</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pb</span><span class="o">.</span><span class="n">file</span><span class="p">):</span>
+            <span class="nb">print</span> <span class="s2">&quot;saving new file: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+            <span class="n">pb</span><span class="o">.</span><span class="n">store_records</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">query</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pb</span><span class="o">.</span><span class="n">query_filetypes</span><span class="p">():</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="n">i</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="nb">print</span> <span class="n">query</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="n">pb</span><span class="o">.</span><span class="n">list_records</span><span class="p">(</span><span class="n">pb</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">add</span><span class="p">:</span>
+        <span class="n">order_id</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">add_record</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">add</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">address</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">add</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">phone</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">add</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="nb">print</span> <span class="s2">&quot;added:&quot;</span><span class="p">,</span> <span class="n">order_id</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span>  <span class="n">result</span>
+
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">add</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">raw_input</span><span class="p">(</span><span class="s2">&quot;name : &quot;</span><span class="p">)</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">raw_input</span><span class="p">(</span><span class="s2">&quot;address : &quot;</span><span class="p">)</span>
+        <span class="n">phone</span> <span class="o">=</span> <span class="n">raw_input</span><span class="p">(</span><span class="s2">&quot;phone number : &quot;</span><span class="p">)</span>
+
+        <span class="n">order_id</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">add_record</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">phone</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;added:&quot;</span><span class="p">,</span> <span class="n">order_id</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">result</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">remove</span><span class="p">:</span>
+        <span class="n">removed</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">remove_record</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">remove</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;record removed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">removed</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">filter</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">filter_entry</span><span class="p">,</span> <span class="n">filter_string</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filter_entry</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                <span class="n">filtered_database</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">filter_records</span><span class="p">(</span><span class="n">filter_string</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">filtered_database</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="n">pb</span><span class="o">.</span><span class="n">list_records</span><span class="p">(</span><span class="n">filtered_database</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="n">filtered_database</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">filter_records</span><span class="p">(</span><span class="n">filter_string</span><span class="p">,</span> <span class="n">filter_entry</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">filtered_database</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">pb</span><span class="o">.</span><span class="n">list_records</span><span class="p">(</span><span class="n">filtered_database</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;phonebook: error: incorrect use of filter command. use: &lt;entry type&gt;=&lt;search expression&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;e.g. phonebook pbook.json --filter name=Michael*&quot;</span>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">convert</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pb</span><span class="o">.</span><span class="n">convert_records</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">convert</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;writing to file: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">convert</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;phonebook: error: </span><span class="si">{}</span><span class="s2"> is not a supported file format&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">convert</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">publish</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">publish_records</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;saving new file: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">phone-book 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Michael Mason.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

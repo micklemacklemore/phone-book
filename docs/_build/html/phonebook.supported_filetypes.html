@@ -1,0 +1,220 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>phonebook.supported_filetypes package &#8212; phone-book 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="phonebook package" href="phonebook.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="phonebook.html" title="phonebook package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phone-book 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="phonebook.html" accesskey="U">phonebook package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-phonebook.supported_filetypes">
+<span id="phonebook-supported-filetypes-package"></span><h1>phonebook.supported_filetypes package<a class="headerlink" href="#module-phonebook.supported_filetypes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-phonebook.supported_filetypes.filetypes">
+<span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-phonebook.supported_filetypes.filetypes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="filetypes-py">
+<h3>filetypes.py<a class="headerlink" href="#filetypes-py" title="Permalink to this headline">¶</a></h3>
+<p>This module contains the subclasses for serialization of formats (reading to and writing from)
+All subclasses inherits the <a class="reference internal" href="#module-phonebook.supported_filetypes.filetypes_abstract" title="phonebook.supported_filetypes.filetypes_abstract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract()</span></code></a> as an abstract class.</p>
+<dl class="class">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookCSV">
+<em class="property">class </em><code class="descclassname">phonebook.supported_filetypes.filetypes.</code><code class="descname">PhoneBookCSV</code><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookCSV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookCSV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC</span></code></a></p>
+<dl class="attribute">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookCSV.filetype">
+<code class="descname">filetype</code><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookCSV.filetype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookCSV.read_from">
+<code class="descname">read_from</code><span class="sig-paren">(</span><em>file_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookCSV.read_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookCSV.read_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that takes a file object to read from and creates a dictionary that
+PhoneBookActions can accept</p>
+<p><strong>file_input</strong> takes a file object to read from</p>
+<p><strong>return:</strong> (list) python dictionary in phoneBook format</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookCSV.write_to">
+<code class="descname">write_to</code><span class="sig-paren">(</span><em>file_output</em>, <em>phone_book</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookCSV.write_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookCSV.write_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for writing the phonebook dictionary to the specified filetype format</p>
+<p><strong>file_output</strong> takes a file object to write to</p>
+<p><strong>phone_book</strong> (dict) phone book</p>
+<p><strong>returns:</strong> (str) string in specified format</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookJSON">
+<em class="property">class </em><code class="descclassname">phonebook.supported_filetypes.filetypes.</code><code class="descname">PhoneBookJSON</code><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookJSON"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookJSON" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC</span></code></a></p>
+<dl class="attribute">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookJSON.filetype">
+<code class="descname">filetype</code><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookJSON.filetype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookJSON.read_from">
+<code class="descname">read_from</code><span class="sig-paren">(</span><em>file_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookJSON.read_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookJSON.read_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that takes a file object to read from and creates a dictionary that
+PhoneBookActions can accept</p>
+<p><strong>file_input</strong> takes a file object to read from</p>
+<p><strong>return:</strong> (list) python dictionary in phoneBook format</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonebook.supported_filetypes.filetypes.PhoneBookJSON.write_to">
+<code class="descname">write_to</code><span class="sig-paren">(</span><em>file_output</em>, <em>phone_book</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookJSON.write_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookJSON.write_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for writing the phonebook dictionary to the specified filetype format</p>
+<p><strong>file_output</strong> takes a file object to write to</p>
+<p><strong>phone_book</strong> (dict) phone book</p>
+<p><strong>returns:</strong> (str) string in specified format</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="phonebook.supported_filetypes.filetypes.query_filetypes">
+<code class="descclassname">phonebook.supported_filetypes.filetypes.</code><code class="descname">query_filetypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#query_filetypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.query_filetypes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<span class="target" id="module-phonebook.supported_filetypes.filetypes_abstract"></span><div class="section" id="filetypes-abstract-py">
+<h3>filetypes_abstract.py<a class="headerlink" href="#filetypes-abstract-py" title="Permalink to this headline">¶</a></h3>
+<p>This module contains the abstract class which all subclasses from <a class="reference internal" href="#module-phonebook.supported_filetypes.filetypes" title="phonebook.supported_filetypes.filetypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes()</span></code></a>
+When adding support for additional storage formats, you must inherit from this class and use it as a template.</p>
+<dl class="class">
+<dt id="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC">
+<em class="property">class </em><code class="descclassname">phonebook.supported_filetypes.filetypes_abstract.</code><code class="descname">PhoneBookABC</code><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes_abstract.html#PhoneBookABC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC.filetype">
+<code class="descname">filetype</code><a class="headerlink" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC.filetype" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em> Returns file extension of phonebook format e.g. ‘json’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC.read_from">
+<code class="descname">read_from</code><span class="sig-paren">(</span><em>file_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes_abstract.html#PhoneBookABC.read_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC.read_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that takes a file object to read from and creates a dictionary that
+PhoneBookActions can accept</p>
+<p><strong>file_input</strong> takes a file object to read from</p>
+<p><strong>return:</strong> (list) python dictionary in phoneBook format</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC.write_to">
+<code class="descname">write_to</code><span class="sig-paren">(</span><em>file_output</em>, <em>phone_book</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes_abstract.html#PhoneBookABC.write_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC.write_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for writing the phonebook dictionary to the specified filetype format</p>
+<p><strong>file_output</strong> takes a file object to write to</p>
+<p><strong>phone_book</strong> (dict) phone book</p>
+<p><strong>returns:</strong> (str) string in specified format</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">phonebook.supported_filetypes package</a><ul>
+<li><a class="reference internal" href="#module-phonebook.supported_filetypes.filetypes">Submodules</a><ul>
+<li><a class="reference internal" href="#filetypes-py">filetypes.py</a></li>
+<li><a class="reference internal" href="#filetypes-abstract-py">filetypes_abstract.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="phonebook.html"
+                        title="previous chapter">phonebook package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/phonebook.supported_filetypes.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="phonebook.html" title="phonebook package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phone-book 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="phonebook.html" >phonebook package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Michael Mason.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

@@ -9,16 +9,10 @@ phonebook.supported\_filetypes package
 Submodules
 ----------
 
-phonebook.supported\_filetypes.filetypes module
------------------------------------------------
-
 .. automodule:: phonebook.supported_filetypes.filetypes
     :members:
     :undoc-members:
     :show-inheritance:
-
-phonebook.supported\_filetypes.filetypes\_abstract module
----------------------------------------------------------
 
 .. automodule:: phonebook.supported_filetypes.filetypes_abstract
     :members:
