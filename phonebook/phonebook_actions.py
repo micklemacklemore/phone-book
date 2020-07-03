@@ -93,6 +93,7 @@ class PhoneBookActions(object):
 
     def remove_record(self, order_id):
         """Remove a record. Specify which record to remove by it's order_id
+
         :param order_id: (int)
         :return: dictionary of the entry that you just removed
         """
@@ -113,6 +114,7 @@ class PhoneBookActions(object):
 
     def retrieve_records(self):
         """Retrieves records from :meth:`file` if it already exists
+
         :return: *dict* of all the records from :meth:`file`
         """
         with open(self._file, 'rb') as file:
@@ -131,7 +133,7 @@ class PhoneBookActions(object):
         """Takes :meth:`database` and creates a nice-looking html table. The resulting html file
         is saved where :meth:`file` is
 
-        :return: Name of outputted html
+        :return: *(string)* Name of newly written html file.
         """
         if not self._database:
             return
@@ -206,8 +208,8 @@ class PhoneBookActions(object):
         """Takes :meth:`database` and writes it to *output_file*. If file extensions
         is not supported then a ValueError will be raised
 
-        :param output_file:
-        :return:
+        :param output_file: *(string)* new file to write to
+        :return: None
         """
         if not self._database:
             return
@@ -255,8 +257,11 @@ class PhoneBookActions(object):
         """Creates a :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC` object
         for reading and writing the :meth:`file`
 
-        :param format: file extension
-        :return:
+        Will automatically query the available objects in :module:`phonebook.supported_filetypes.filetypes'
+        if *format* is supported. If not a ValueError is raised.
+
+        :param format: *(string)* file extension e.g. 'json', 'csv', 'yaml'
+        :return: :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC`
         """
         filetypes = supported_filetypes.filetypes.query_filetypes()
         if format in filetypes:
