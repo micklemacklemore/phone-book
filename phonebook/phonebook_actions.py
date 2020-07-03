@@ -5,8 +5,7 @@
     This module contains the PhoneBookActions class the implements the actual commands called by phonebook.py
     and writes the actual file.
 
-    :meth:`phonebook.supported_filetypes.filetypes` module is where the serialization happens. Which uses
-    :meth:`phonebook.supported_filetypes.filetypes_abstract` as an interface
+    The :meth:`phonebook.supported_filetypes.filetypes` module is where the serialization happens.
 """
 
 import os
@@ -24,22 +23,19 @@ import html_template
 class PhoneBookActions(object):
     """
     The PhoneBookActions class implements actions related to saving/editing/converting a phone book.
+    **output_file** is the name of the file you want to write your records to.
+
+    e.g. "pbook.json" will save to working dir and will save as .json
+
+    If the specified file type is not supported a ValueError is raised.
+    You can query supported filetypes using :meth:`query_filetypes`
     """
 
-    def __init__(self, input_file):
-        """
-        Create a new PhoneBookActions object, input a filename as a parameter and
-        it will determine where the phonebook will be saved and to what format.
+    def __init__(self, output_file):
 
-        e.g. "pbook.json" will save to working dir and will save as .json
-
-        If the specified file type is not supported a ValueError is raised during construction.
-        You can query filetypes using the :meth:`query_filetypes`
-        :param input_file: (string) write to this file if database is edited
-        """
         # determine file and file extension if there is one
-        self._file = input_file
-        self._format = self._format = input_file.rsplit('.')[-1]
+        self._file = output_file
+        self._format = self._format = output_file.rsplit('.')[-1]
 
         # determine what filetypes.class to use based on the file extension
         self._reader_writer = self._create_reader_writer(self._format)
@@ -52,14 +48,13 @@ class PhoneBookActions(object):
     @property
     def file(self):
         """
-        :return: value of :attr:`_file`
+        (string) the output file
         """
         return self._file
 
     @property
     def database(self):
-        """A dictionary which contains all phone book records.
-        :return: value of :attr:`_database`
+        """All phone book records in *dict* format
         """
         return self._database
 
@@ -74,12 +69,12 @@ class PhoneBookActions(object):
     # to order the damn entries! Curse you python 2 and your un-ordered dictionary! Hmm well I guess I could have at
     # least used an orderedDict...
     def add_record(self, name=None, address=None, phone=None):
-        """
-
-        :param name:
-        :param address:
-        :param phone:
-        :return:
+        """Adds a record and writes to :meth:`file`
+        Returns the record's order in the database, and the record that was added in *dict* form
+        :param name: string
+        :param address: string
+        :param phone: string
+        :return: order_id, database[order_id]
         """
         record = {"name": str(name),
                   "address": str(address),
@@ -97,6 +92,10 @@ class PhoneBookActions(object):
         return order_id, self._database[str(order_id)]
 
     def remove_record(self, order_id):
+        """Remove a record. Specify which record to remove by it's order_id
+        :param order_id: (int)
+        :return: dictionary of the entry that you just removed
+        """
         if self._database:
             if order_id not in self._database:
                 return
@@ -113,15 +112,26 @@ class PhoneBookActions(object):
             return
 
     def retrieve_records(self):
+        """
+        :return:
+        """
         with open(self._file, 'rb') as file:
             database = self._reader_writer.read_from(file)
         return database
 
     def store_records(self):
+        """
+
+        :return:
+        """
         with open(self._file, 'wb') as f:
             self._reader_writer.write_to(f, self._database)
 
     def publish_records(self):
+        """
+
+        :return:
+        """
         if not self._database:
             return
         database = self._database.copy()
@@ -162,6 +172,11 @@ class PhoneBookActions(object):
         return html_output
 
     def list_records(self, database=None):
+        """
+
+        :param database:
+        :return:
+        """
         if not database:
             if not self._database:
                 return
@@ -187,6 +202,11 @@ class PhoneBookActions(object):
         return string
 
     def convert_records(self, output_file):
+        """
+
+        :param output_file:
+        :return:
+        """
         if not self._database:
             return
         format = output_file.rsplit('.')[-1]
@@ -195,6 +215,12 @@ class PhoneBookActions(object):
             reader_writer.write_to(f, self._database)
 
     def filter_records(self, filter_string, filter_entry=None):
+        """
+
+        :param filter_string:
+        :param filter_entry:
+        :return:
+        """
         if not self._database:
             return
         filtered_database = {}
@@ -219,6 +245,11 @@ class PhoneBookActions(object):
         return filtered_database
 
     def _create_reader_writer(self, format):
+        """
+
+        :param format:
+        :return:
+        """
         filetypes = supported_filetypes.filetypes.query_filetypes()
         if format in filetypes:
             return filetypes[format]()

@@ -1,0 +1,34 @@
+\indexentry{phonebook (module)@\spxentry{phonebook}\spxextra{module}|hyperpage}{3}
+\indexentry{phonebook.supported\_filetypes (module)@\spxentry{phonebook.supported\_filetypes}\spxextra{module}|hyperpage}{3}
+\indexentry{phonebook.supported\_filetypes.filetypes (module)@\spxentry{phonebook.supported\_filetypes.filetypes}\spxextra{module}|hyperpage}{3}
+\indexentry{PhoneBookCSV (class in phonebook.supported\_filetypes.filetypes)@\spxentry{PhoneBookCSV}\spxextra{class in phonebook.supported\_filetypes.filetypes}|hyperpage}{3}
+\indexentry{filetype (phonebook.supported\_filetypes.filetypes.PhoneBookCSV attribute)@\spxentry{filetype}\spxextra{phonebook.supported\_filetypes.filetypes.PhoneBookCSV attribute}|hyperpage}{4}
+\indexentry{read\_from() (phonebook.supported\_filetypes.filetypes.PhoneBookCSV method)@\spxentry{read\_from()}\spxextra{phonebook.supported\_filetypes.filetypes.PhoneBookCSV method}|hyperpage}{4}
+\indexentry{write\_to() (phonebook.supported\_filetypes.filetypes.PhoneBookCSV method)@\spxentry{write\_to()}\spxextra{phonebook.supported\_filetypes.filetypes.PhoneBookCSV method}|hyperpage}{4}
+\indexentry{PhoneBookJSON (class in phonebook.supported\_filetypes.filetypes)@\spxentry{PhoneBookJSON}\spxextra{class in phonebook.supported\_filetypes.filetypes}|hyperpage}{4}
+\indexentry{filetype (phonebook.supported\_filetypes.filetypes.PhoneBookJSON attribute)@\spxentry{filetype}\spxextra{phonebook.supported\_filetypes.filetypes.PhoneBookJSON attribute}|hyperpage}{4}
+\indexentry{read\_from() (phonebook.supported\_filetypes.filetypes.PhoneBookJSON method)@\spxentry{read\_from()}\spxextra{phonebook.supported\_filetypes.filetypes.PhoneBookJSON method}|hyperpage}{4}
+\indexentry{write\_to() (phonebook.supported\_filetypes.filetypes.PhoneBookJSON method)@\spxentry{write\_to()}\spxextra{phonebook.supported\_filetypes.filetypes.PhoneBookJSON method}|hyperpage}{4}
+\indexentry{query\_filetypes() (in module phonebook.supported\_filetypes.filetypes)@\spxentry{query\_filetypes()}\spxextra{in module phonebook.supported\_filetypes.filetypes}|hyperpage}{4}
+\indexentry{phonebook.supported\_filetypes.filetypes\_abstract (module)@\spxentry{phonebook.supported\_filetypes.filetypes\_abstract}\spxextra{module}|hyperpage}{4}
+\indexentry{PhoneBookABC (class in phonebook.supported\_filetypes.filetypes\_abstract)@\spxentry{PhoneBookABC}\spxextra{class in phonebook.supported\_filetypes.filetypes\_abstract}|hyperpage}{4}
+\indexentry{filetype (phonebook.supported\_filetypes.filetypes\_abstract.PhoneBookABC attribute)@\spxentry{filetype}\spxextra{phonebook.supported\_filetypes.filetypes\_abstract.PhoneBookABC attribute}|hyperpage}{4}
+\indexentry{read\_from() (phonebook.supported\_filetypes.filetypes\_abstract.PhoneBookABC method)@\spxentry{read\_from()}\spxextra{phonebook.supported\_filetypes.filetypes\_abstract.PhoneBookABC method}|hyperpage}{4}
+\indexentry{write\_to() (phonebook.supported\_filetypes.filetypes\_abstract.PhoneBookABC method)@\spxentry{write\_to()}\spxextra{phonebook.supported\_filetypes.filetypes\_abstract.PhoneBookABC method}|hyperpage}{4}
+\indexentry{phonebook.html\_template (module)@\spxentry{phonebook.html\_template}\spxextra{module}|hyperpage}{4}
+\indexentry{phonebook.phonebook (module)@\spxentry{phonebook.phonebook}\spxextra{module}|hyperpage}{5}
+\indexentry{help\_description() (in module phonebook.phonebook)@\spxentry{help\_description()}\spxextra{in module phonebook.phonebook}|hyperpage}{5}
+\indexentry{parse\_args() (in module phonebook.phonebook)@\spxentry{parse\_args()}\spxextra{in module phonebook.phonebook}|hyperpage}{5}
+\indexentry{phonebook.phonebook\_actions (module)@\spxentry{phonebook.phonebook\_actions}\spxextra{module}|hyperpage}{5}
+\indexentry{PhoneBookActions (class in phonebook.phonebook\_actions)@\spxentry{PhoneBookActions}\spxextra{class in phonebook.phonebook\_actions}|hyperpage}{5}
+\indexentry{add\_record() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{add\_record()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{5}
+\indexentry{convert\_records() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{convert\_records()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{5}
+\indexentry{database (phonebook.phonebook\_actions.PhoneBookActions attribute)@\spxentry{database}\spxextra{phonebook.phonebook\_actions.PhoneBookActions attribute}|hyperpage}{5}
+\indexentry{file (phonebook.phonebook\_actions.PhoneBookActions attribute)@\spxentry{file}\spxextra{phonebook.phonebook\_actions.PhoneBookActions attribute}|hyperpage}{5}
+\indexentry{filter\_records() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{filter\_records()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{5}
+\indexentry{list\_records() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{list\_records()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{5}
+\indexentry{publish\_records() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{publish\_records()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{5}
+\indexentry{query\_filetypes() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{query\_filetypes()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{6}
+\indexentry{remove\_record() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{remove\_record()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{6}
+\indexentry{retrieve\_records() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{retrieve\_records()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{6}
+\indexentry{store\_records() (phonebook.phonebook\_actions.PhoneBookActions method)@\spxentry{store\_records()}\spxextra{phonebook.phonebook\_actions.PhoneBookActions method}|hyperpage}{6}

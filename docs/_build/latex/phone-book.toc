@@ -1,0 +1,23 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Project Brief}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}We will discuss:}{3}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}phonebook}{3}{subsection.1.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1.1}phonebook package}{3}{subsubsection.1.1.1.1}%
+\contentsline {paragraph}{phone-book}{3}{paragraph*.3}%
+\contentsline {paragraph}{Subpackages}{3}{paragraph*.4}%
+\contentsline {subparagraph}{phonebook.supported\_filetypes package}{3}{subparagraph*.5}%
+\contentsline {subparagraph}{Submodules}{3}{subparagraph*.6}%
+\contentsline {subparagraph}{phonebook.supported\_filetypes.filetypes module}{3}{subparagraph*.7}%
+\contentsline {subparagraph}{filetypes.py}{3}{subparagraph*.8}%
+\contentsline {subparagraph}{phonebook.supported\_filetypes.filetypes\_abstract module}{4}{subparagraph*.18}%
+\contentsline {subparagraph}{filetypes\_abstract.py}{4}{subparagraph*.19}%
+\contentsline {paragraph}{Submodules}{4}{paragraph*.24}%
+\contentsline {paragraph}{phonebook.html\_template module}{4}{paragraph*.25}%
+\contentsline {subparagraph}{html\_template.py}{4}{subparagraph*.26}%
+\contentsline {paragraph}{phonebook.phonebook module}{5}{paragraph*.27}%
+\contentsline {subparagraph}{phonebook.py}{5}{subparagraph*.28}%
+\contentsline {paragraph}{phonebook.phonebook\_actions module}{5}{paragraph*.31}%
+\contentsline {subparagraph}{phonebook\_actions.py}{5}{subparagraph*.32}%
+\contentsline {chapter}{\numberline {2}indices and tables}{7}{chapter.2}%
+\contentsline {chapter}{Python Module Index}{9}{section*.45}%
+\contentsline {chapter}{Index}{11}{section*.46}%
