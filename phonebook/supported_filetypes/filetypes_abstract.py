@@ -1,3 +1,10 @@
+"""
+    filetypes_abstract.py
+    ------------
+    This module contains the abstract class which all subclasses from :meth:`phonebook.supported_filetypes.filetypes`
+    When adding support for additional storage formats, you must inherit from this class and use it as a template.
+"""
+
 import abc
 
 class PhoneBookABC(object):

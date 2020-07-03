@@ -29,3 +29,11 @@ We will discuss:
 - thing
 - other thing
 - this thing
+
+.. include:: modules.rst
+
+indices and tables
+------------------
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

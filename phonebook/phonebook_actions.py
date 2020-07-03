@@ -52,22 +52,21 @@ class PhoneBookActions(object):
     @property
     def file(self):
         """
-        :return:
+        :return: value of :attr:`_file`
         """
         return self._file
 
     @property
     def database(self):
-        """
-        :return:
+        """A dictionary which contains all phone book records.
+        :return: value of :attr:`_database`
         """
         return self._database
 
-    # This is a static method so it probably doesn't belong in this class,
-    # but for the sake of keeping things in one place it'll do
+    # This probably doesn't belong in this class
     def query_filetypes(self):
-        """
-        :return:
+        """Convenient method that returns list of supported filetypes for serialization
+        :return: a list of supported filetypes from :meth:`phonebook.supported_filetypes.filetypes`
         """
         return [i for i in supported_filetypes.filetypes.query_filetypes()]
 
@@ -75,6 +74,13 @@ class PhoneBookActions(object):
     # to order the damn entries! Curse you python 2 and your un-ordered dictionary! Hmm well I guess I could have at
     # least used an orderedDict...
     def add_record(self, name=None, address=None, phone=None):
+        """
+
+        :param name:
+        :param address:
+        :param phone:
+        :return:
+        """
         record = {"name": str(name),
                   "address": str(address),
                   "phone": str(phone).replace(" ", "")}
