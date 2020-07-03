@@ -2,8 +2,8 @@
     phonebook_actions.py
     --------------------
 
-    This module contains the PhoneBookActions class the implements the actual commands called by phonebook.py
-    and writes the actual file.
+    This module contains the PhoneBookActions class, which implements the commandline commands called by
+    :meth:`phonebook.phonebook` and writes the phonebook records to storage
 
     The :meth:`phonebook.supported_filetypes.filetypes` module is where the serialization happens.
 """

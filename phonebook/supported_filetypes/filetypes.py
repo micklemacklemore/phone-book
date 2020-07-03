@@ -3,7 +3,46 @@
     ------------
 
     This module contains the subclasses for serialization of formats (reading to and writing from)
-    All subclasses inherits the :meth:`phonebook.supported_filetypes.filetypes_abstract` as an abstract class.
+    All subclasses inherits the :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC`
+    as an abstract class.
+
+    To add a new format, create a new subclass of the :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC`.
+
+    An example of implementing another subclass of
+    :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC`::
+
+        class PhoneBookYAML(filetypes_abstract.PhoneBookABC)
+            def __init__(self):
+                self._filetype = 'yaml'
+
+            @property
+            def filetype(self):
+                return self._filetype
+
+            def write_to(self, file_output, phone_book):
+                # ...
+                return file_output
+
+            def read_from(self, file_input):
+                # ...
+                return database
+
+    You must define the *filetype* property as the file name extension name
+
+    the *write_to* method must be able to take a :meth:`phonebook.phonebook_actions.PhoneBookActions.database`
+    and write to the file.
+
+    The *read_from* method must be able to read from *file* object and create a *dict* in the same format as a
+    :meth:`phonebook.phonebook_actions.PhoneBookActions.database`.
+
+    A :meth:`phonebook.phonebook_actions.PhoneBookActions.database` dictionary typically looks like this::
+
+        database = {"1": {"phone": "0423702089","name": "Gaby Mason", "address": "109 Hawk Street"},
+                    "2": {"phone": "0492312233","name": "Jeremy Mason", "address": "109 Hidfe Street"}}
+
+    **Note:** Dictionaries in Python 2.7 are un-ordered, so you have to take special care if you want your records
+    written in an ordered way.
+
 """
 
 import filetypes_abstract
@@ -78,18 +117,3 @@ class PhoneBookCSV(filetypes_abstract.PhoneBookABC):
             data[line['ID']] = line.copy()
             data[line['ID']].pop('ID')
         return data
-
-
-# class PhoneBookYaml(filetypes_abstract.PhoneBookABC):
-#     def __init__(self):
-#         self._filetype = 'yaml'
-#
-#     @property
-#     def filetype(self):
-#         return self._filetype
-#
-#     def write_to(self, file_output, phone_book):
-#         pass
-#
-#     def read_from(self, file_input):
-#         pass

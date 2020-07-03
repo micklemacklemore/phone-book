@@ -44,12 +44,50 @@
             
   <div class="section" id="module-phonebook.supported_filetypes">
 <span id="phonebook-supported-filetypes-package"></span><h1>phonebook.supported_filetypes package<a class="headerlink" href="#module-phonebook.supported_filetypes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="supported-filetypes">
+<h2>supported_filetypes<a class="headerlink" href="#supported-filetypes" title="Permalink to this headline">¶</a></h2>
+<p>Adding support for additional formats is as easy as creating a new
+<a class="reference internal" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC()</span></code></a> class in</p>
+</div>
 <div class="section" id="module-phonebook.supported_filetypes.filetypes">
 <span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-phonebook.supported_filetypes.filetypes" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="filetypes-py">
 <h3>filetypes.py<a class="headerlink" href="#filetypes-py" title="Permalink to this headline">¶</a></h3>
 <p>This module contains the subclasses for serialization of formats (reading to and writing from)
-All subclasses inherits the <a class="reference internal" href="#module-phonebook.supported_filetypes.filetypes_abstract" title="phonebook.supported_filetypes.filetypes_abstract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract()</span></code></a> as an abstract class.</p>
+All subclasses inherits the <a class="reference internal" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC()</span></code></a>
+as an abstract class.</p>
+<p>To add a new format, create a new subclass of the <a class="reference internal" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC()</span></code></a>.</p>
+<p>An example of implementing another subclass of
+<a class="reference internal" href="#phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC" title="phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC()</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PhoneBookYAML</span><span class="p">(</span><span class="n">filetypes_abstract</span><span class="o">.</span><span class="n">PhoneBookABC</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span> <span class="o">=</span> <span class="s1">&#39;yaml&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filetype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filetype</span>
+
+    <span class="k">def</span> <span class="nf">write_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_output</span><span class="p">,</span> <span class="n">phone_book</span><span class="p">):</span>
+        <span class="c1"># ...</span>
+        <span class="k">return</span> <span class="n">file_output</span>
+
+    <span class="k">def</span> <span class="nf">read_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_input</span><span class="p">):</span>
+        <span class="c1"># ...</span>
+        <span class="k">return</span> <span class="n">database</span>
+</pre></div>
+</div>
+<p>You must define the <em>filetype</em> property as the file name extension name</p>
+<p>the <em>write_to</em> method must be able to take a <a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.database" title="phonebook.phonebook_actions.PhoneBookActions.database"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.database()</span></code></a>
+and write to the file.</p>
+<p>The <em>read_from</em> method must be able to read from <em>file</em> object and create a <em>dict</em> in the same format as a
+<a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.database" title="phonebook.phonebook_actions.PhoneBookActions.database"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.database()</span></code></a>.</p>
+<p>A <a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.database" title="phonebook.phonebook_actions.PhoneBookActions.database"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.database()</span></code></a> dictionary typically looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">database</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="s2">&quot;0423702089&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Gaby Mason&quot;</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;109 Hawk Street&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="s2">&quot;0492312233&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Jeremy Mason&quot;</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;109 Hidfe Street&quot;</span><span class="p">}}</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Dictionaries in Python 2.7 are un-ordered, so you have to take special care if you want your records
+written in an ordered way.</p>
 <dl class="class">
 <dt id="phonebook.supported_filetypes.filetypes.PhoneBookCSV">
 <em class="property">class </em><code class="descclassname">phonebook.supported_filetypes.filetypes.</code><code class="descname">PhoneBookCSV</code><a class="reference internal" href="_modules/phonebook/supported_filetypes/filetypes.html#PhoneBookCSV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phonebook.supported_filetypes.filetypes.PhoneBookCSV" title="Permalink to this definition">¶</a></dt>
@@ -161,6 +199,7 @@ PhoneBookActions can accept</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">phonebook.supported_filetypes package</a><ul>
+<li><a class="reference internal" href="#supported-filetypes">supported_filetypes</a></li>
 <li><a class="reference internal" href="#module-phonebook.supported_filetypes.filetypes">Submodules</a><ul>
 <li><a class="reference internal" href="#filetypes-py">filetypes.py</a></li>
 <li><a class="reference internal" href="#filetypes-abstract-py">filetypes_abstract.py</a></li>
