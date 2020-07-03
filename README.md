@@ -1,4 +1,7 @@
 # phone-book
+
+##### API Documentation / Journal: [./docs/_build/html/index.html](./docs/_build/html/index.html)
+
 A simple Python module that's designed to take a set of personal data and store it in various formats.
 It has a command-line tool that can be run from the root of this directory
 
@@ -8,7 +11,7 @@ It has a command-line tool that can be run from the root of this directory
 - JSON
 - CSV
 
-System to support additonal file formats is easily extendable
+System to support additonal file formats is easily extendable.
 
   
 ## Usage

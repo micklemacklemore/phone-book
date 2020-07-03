@@ -10,10 +10,18 @@ import supported_filetypes.filetypes
 import html_template
 
 
-# Kicking myself for not using
+# Records are created as dictionaries. I'm kicking myself right now because I realised
+# it would have been better to create pass them as objects. This way I would have been
+# able to easily order them and also they would be easily extendable. Alas, I figure
+# I don't have the time to redo that. Serialisation is at least extendable, and I
+# prioritised that because it was in the brief.
 class PhoneBookActions(object):
 
     def __init__(self, input_file):
+        """Responsible for performing actions on the phonebook file.
+
+        :param input_file: (string) file of phone book to be saved/edited/converted
+        """
         # determine file and file extension if there is one
         self._file = input_file
         self._format = self._format = input_file.rsplit('.')[-1]
@@ -28,10 +36,16 @@ class PhoneBookActions(object):
 
     @property
     def file(self):
+        """
+        :return:
+        """
         return self._file
 
     @property
     def database(self):
+        """
+        :return:
+        """
         return self._database
 
     def query_filetypes(self):
