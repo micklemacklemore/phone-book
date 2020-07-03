@@ -1,3 +1,11 @@
+"""
+    filetypes.py
+    ------------
+
+    This module contains the subclasses for serialization of formats (reading to and writing from)
+    All subclasses inherits the filetypes_abstract.PhoneBookABC() as an abstract class.
+"""
+
 import filetypes_abstract
 
 import sys

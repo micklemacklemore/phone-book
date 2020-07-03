@@ -1,8 +1,14 @@
-"""Module that does a thing
-
-27/06/2020
-michaelmason@live.com.au
 """
+    phonebook_actions.py
+    --------------------
+
+    This module contains the PhoneBookActions class the implements the actual commands called by phonebook.py
+    and writes the actual file.
+
+    :meth:`phonebook.supported_filetypes.filetypes` module is where the serialization happens. Which uses
+    :meth:`phonebook.supported_filetypes.filetypes_abstract` as an interface
+"""
+
 import os
 import fnmatch
 
@@ -18,7 +24,6 @@ import html_template
 class PhoneBookActions(object):
     """
     The PhoneBookActions class implements actions related to saving/editing/converting a phone book.
-    :meth:`add_record`
     """
 
     def __init__(self, input_file):
@@ -28,7 +33,8 @@ class PhoneBookActions(object):
 
         e.g. "pbook.json" will save to working dir and will save as .json
 
-        If the specified file type is not supported a ValueError is raised during construction
+        If the specified file type is not supported a ValueError is raised during construction.
+        You can query filetypes using the :meth:`query_filetypes`
         :param input_file: (string) write to this file if database is edited
         """
         # determine file and file extension if there is one
@@ -57,7 +63,12 @@ class PhoneBookActions(object):
         """
         return self._database
 
+    # This is a static method so it probably doesn't belong in this class,
+    # but for the sake of keeping things in one place it'll do
     def query_filetypes(self):
+        """
+        :return:
+        """
         return [i for i in supported_filetypes.filetypes.query_filetypes()]
 
     # May have been better to create a record class instead of a dictionary, for extendability, and also for the ability

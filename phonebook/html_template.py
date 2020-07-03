@@ -1,3 +1,10 @@
+"""
+    html_template.py
+    ----------------
+
+    This string is the html template used when using the publish_records method to write the file.
+"""
+
 # https://www.w3schools.com/howto/howto_js_filter_table.asp Used HTML from this website to use as my template for
 # publishing my htmls
 

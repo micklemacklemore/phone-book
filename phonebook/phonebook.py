@@ -1,3 +1,10 @@
+"""
+    phonebook.py
+    ------------
+
+    This module contains the commandline parsing stuff.
+"""
+
 import supported_filetypes.filetypes
 from phonebook_actions import PhoneBookActions
 
@@ -12,7 +19,9 @@ def help_description():
         description += "\n{}".format(filetype)
     return description
 
-
+# Ideally I would use a gang of four command strategy here, but for the sake of time / scope,
+# it was easier just to keep the commandline argument stuff in one file like this. Would be
+# too much complication for this little tool anyway.
 def parse_args():
     parser = argparse.ArgumentParser(description=help_description(), formatter_class=argparse.RawTextHelpFormatter)
 
