@@ -47,8 +47,7 @@ class PhoneBookActions(object):
 
     @property
     def file(self):
-        """
-        (string) the output file
+        """(string) the output file
         """
         return self._file
 
@@ -71,6 +70,7 @@ class PhoneBookActions(object):
     def add_record(self, name=None, address=None, phone=None):
         """Adds a record and writes to :meth:`file`
         Returns the record's order in the database, and the record that was added in *dict* form
+
         :param name: string
         :param address: string
         :param phone: string
@@ -112,25 +112,26 @@ class PhoneBookActions(object):
             return
 
     def retrieve_records(self):
-        """
-        :return:
+        """Retrieves records from :meth:`file` if it already exists
+        :return: *dict* of all the records from :meth:`file`
         """
         with open(self._file, 'rb') as file:
             database = self._reader_writer.read_from(file)
         return database
 
     def store_records(self):
-        """
+        """writes :meth:`database` to :meth:`file`
 
-        :return:
+        :return: None
         """
         with open(self._file, 'wb') as f:
             self._reader_writer.write_to(f, self._database)
 
     def publish_records(self):
-        """
+        """Takes :meth:`database` and creates a nice-looking html table. The resulting html file
+        is saved where :meth:`file` is
 
-        :return:
+        :return: Name of outputted html
         """
         if not self._database:
             return
@@ -172,10 +173,11 @@ class PhoneBookActions(object):
         return html_output
 
     def list_records(self, database=None):
-        """
+        """Takes a dict of phonebook records and returns a string in an ordered, nice looking format
+        that can output to a commandline
 
-        :param database:
-        :return:
+        :param database: *dict* of phonebook records
+        :return: *string* of phonebook records
         """
         if not database:
             if not self._database:
@@ -195,14 +197,14 @@ class PhoneBookActions(object):
             lines.append(line)
         lines = sorted(lines)
 
-        # TODO: format these strings based on maximum possible length of a string
         string = "\n{:<8} {:<15} {:<30} {:<30}".format(*field_names)
         for i in lines:
             string += ("\n{:<8} {:<15} {:<30} {:<30}".format(*i))
         return string
 
     def convert_records(self, output_file):
-        """
+        """Takes :meth:`database` and writes it to *output_file*. If file extensions
+        is not supported then a ValueError will be raised
 
         :param output_file:
         :return:
@@ -215,11 +217,16 @@ class PhoneBookActions(object):
             reader_writer.write_to(f, self._database)
 
     def filter_records(self, filter_string, filter_entry=None):
-        """
+        """Filter through :meth:`database` using Unix-shell style wildcards.
+        Passes in a string, *filter_string* that fnmatch can use to search through each entry of the
+        database.
 
-        :param filter_string:
-        :param filter_entry:
-        :return:
+        Specifying *filter_entry* lets you filter by entry. e.g. "name", "address", or "phone" could
+        be used
+
+        :param filter_string: a search *string*
+        :param filter_entry: a *string* specifying entry type
+        :return: *dict* of phonebook records
         """
         if not self._database:
             return
@@ -245,9 +252,10 @@ class PhoneBookActions(object):
         return filtered_database
 
     def _create_reader_writer(self, format):
-        """
+        """Creates a :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC` object
+        for reading and writing the :meth:`file`
 
-        :param format:
+        :param format: file extension
         :return:
         """
         filetypes = supported_filetypes.filetypes.query_filetypes()
