@@ -2,26 +2,26 @@
    sphinx-quickstart on Fri Jul  3 09:35:13 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-
-Welcome to phone-book's documentation
-=====================================
-
-This does something and that is really cool!
-
-for more information, go to `Google <https://www.google.com>`_
-
-Example
--------
-
-We can include code like this::
-
-   import maya.cmds
-   print "hello world"
+   sphinx-apidoc -o docs phonebook/ -f -M -E
 
 
+phone-book documentation
+========================
+
+A simple Python module that's designed to take a set of personal data and store it in various formats. It has a command-line tool that can be run from the root of this directory
+
+Requires: Python 2.7
+
+Currently supports serialisation in:
+
+- JSON
+- CSV
+
+System to support additional file formats is easily extendable.
+check: :meth:`phonebook.supported_filetypes` for more information.
 
 Project Brief
-_____________
+-------------
 
 We will discuss:
 """"""""""""""""
