@@ -3,7 +3,7 @@
     ------------
 
     This module contains the subclasses for serialization of formats (reading to and writing from)
-    All subclasses inherits the filetypes_abstract.PhoneBookABC() as an abstract class.
+    All subclasses inherits the :meth:`phonebook.supported_filetypes.filetypes_abstract` as an abstract class.
 """
 
 import filetypes_abstract
