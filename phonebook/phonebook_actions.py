@@ -16,11 +16,20 @@ import html_template
 # I don't have the time to redo that. Serialisation is at least extendable, and I
 # prioritised that because it was in the brief.
 class PhoneBookActions(object):
+    """
+    The PhoneBookActions class implements actions related to saving/editing/converting a phone book.
+    :meth:`add_record`
+    """
 
     def __init__(self, input_file):
-        """Responsible for performing actions on the phonebook file.
+        """
+        Create a new PhoneBookActions object, input a filename as a parameter and
+        it will determine where the phonebook will be saved and to what format.
 
-        :param input_file: (string) file of phone book to be saved/edited/converted
+        e.g. "pbook.json" will save to working dir and will save as .json
+
+        If the specified file type is not supported a ValueError is raised during construction
+        :param input_file: (string) write to this file if database is edited
         """
         # determine file and file extension if there is one
         self._file = input_file
