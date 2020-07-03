@@ -66,12 +66,6 @@ The records are able to be displayed through **text output** (--list command) an
 **HTML output** saves a html file, where the records are displayed in a table, which can be filtered.
 See: :meth:`phonebook.phonebook_actions.PhoneBookActions.publish_records`
 
-raw:: html
-
-   <embed>
-   </embed>
-
-
 **Note:** You can check my code for commenting on where I had challenges, and where I think I could extend and
 improve the module further.
 
