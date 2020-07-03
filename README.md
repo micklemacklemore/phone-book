@@ -1,6 +1,6 @@
 # phone-book
 
-##### API Documentation / Journal can be found in [documentation](./Documentation.lnk)
+##### API Documentation / Journal can be found in [./docs/_build/html/index.html](./Documentation.lnk)
 
 A simple Python module that's designed to take a set of personal data and store it in various formats.
 It has a command-line tool that can be run from the root of this directory
