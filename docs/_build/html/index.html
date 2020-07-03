@@ -52,16 +52,63 @@
 </ul>
 <p>System to support additional file formats is easily extendable.
 check: <a class="reference internal" href="phonebook.supported_filetypes.html#module-phonebook.supported_filetypes" title="phonebook.supported_filetypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes()</span></code></a> for more information.</p>
-<div class="section" id="project-brief">
-<h2>Project Brief<a class="headerlink" href="#project-brief" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="we-will-discuss">
-<h3>We will discuss:<a class="headerlink" href="#we-will-discuss" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="addressing-the-challenge-brief">
+<h2>Addressing The Challenge Brief<a class="headerlink" href="#addressing-the-challenge-brief" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>In Python or C++ write a module or small library which shows how you would take a set of personal data, where each record contains:</p>
 <ul class="simple">
-<li>thing</li>
-<li>other thing</li>
-<li>this thing</li>
+<li>name</li>
+<li>address</li>
+<li>phone number</li>
 </ul>
-</div>
+</div></blockquote>
+<p>My module takes these records as strings and stores them in a dictionary. As dictionaries
+are unordered, each record has an order_id starting from 1, and then incrementing from 1
+as more records are added.</p>
+<p>(See: <a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.add_record" title="phonebook.phonebook_actions.PhoneBookActions.add_record"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.add_record()</span></code></a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>filter users (e.g “name=Joe*”) based on some simple search syntax like Glob.</li>
+</ul>
+</div></blockquote>
+<p>I used the <code class="xref py py-meth docutils literal notranslate"><span class="pre">fnmatch()</span></code> module to do this easily. It accepts <strong>Unix shell-style wildcards.</strong>
+See: <a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.filter_records" title="phonebook.phonebook_actions.PhoneBookActions.filter_records"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.filter_records()</span></code></a></p>
+<blockquote>
+<div><ul class="simple">
+<li>support serialisation in 2 or more formats (e.g JSON, Yaml, XML, CSV etc)</li>
+<li><dl class="first docutils">
+<dt>Write it in such a way that it would be easy for a developer to extend the system e.g.</dt>
+<dd><ul class="first last">
+<li>to add support for additional formats</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Phonebook module supports serialisation in <strong>json and csv.</strong></p>
+<p>I used a <strong>strategy design pattern</strong> to make it easy for someone to be able to add the functionality
+for additional formats. I used the <code class="xref py py-meth docutils literal notranslate"><span class="pre">abc()</span></code> module to create an abstract class to be used as
+an interface. Each subclass must define a file extension property, a write method and a read method.</p>
+<p>(See: <a class="reference internal" href="phonebook.supported_filetypes.html#module-phonebook.supported_filetypes" title="phonebook.supported_filetypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes()</span></code></a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>to query a list of currently supported formats</li>
+</ul>
+</div></blockquote>
+<p><strong>List of supported formats</strong> can be queried through the commandline interface through the –help command,
+and the list is created based on the available subclasses in <a class="reference internal" href="phonebook.supported_filetypes.html#module-phonebook.supported_filetypes.filetypes" title="phonebook.supported_filetypes.filetypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.supported_filetypes.filetypes()</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Display the data in 2 or more different output formats</li>
+</ul>
+</div></blockquote>
+<p>The records are able to be displayed through <strong>text output</strong> (–list command) and <strong>html output</strong> (–publish command)</p>
+<p><strong>Text output</strong> simply prints the records neatly to the commandline. See: <a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.list_records" title="phonebook.phonebook_actions.PhoneBookActions.list_records"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.list_records()</span></code></a></p>
+<p><strong>HTML output</strong> saves a html file, where the records are displayed in a table, which can be filtered.
+See: <a class="reference internal" href="phonebook.html#phonebook.phonebook_actions.PhoneBookActions.publish_records" title="phonebook.phonebook_actions.PhoneBookActions.publish_records"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phonebook.phonebook_actions.PhoneBookActions.publish_records()</span></code></a></p>
+<p><strong>Note:</strong> You can check my code for commenting on where I had challenges, and where I think I could extend and
+improve the module further.</p>
 </div>
 </div>
 <div class="section" id="phonebook">
@@ -107,10 +154,7 @@ check: <a class="reference internal" href="phonebook.supported_filetypes.html#mo
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">phone-book documentation</a><ul>
-<li><a class="reference internal" href="#project-brief">Project Brief</a><ul>
-<li><a class="reference internal" href="#we-will-discuss">We will discuss:</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#addressing-the-challenge-brief">Addressing The Challenge Brief</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#phonebook">phonebook</a><ul>
