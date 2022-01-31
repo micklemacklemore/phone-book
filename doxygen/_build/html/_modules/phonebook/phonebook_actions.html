@@ -1,0 +1,353 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>phonebook.phonebook_actions &#8212; phone-book 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">phone-book 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for phonebook.phonebook_actions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    phonebook_actions.py</span>
+<span class="sd">    --------------------</span>
+
+<span class="sd">    This module contains the PhoneBookActions class, which implements the commandline commands called by</span>
+<span class="sd">    :meth:`phonebook.phonebook` and writes the phonebook records to storage</span>
+
+<span class="sd">    The :meth:`phonebook.supported_filetypes.filetypes` module is where the serialization happens.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+
+<span class="kn">import</span> <span class="nn">supported_filetypes.filetypes</span>
+<span class="kn">import</span> <span class="nn">html_template</span>
+
+
+<span class="c1"># Records are created as dictionaries. I&#39;m kicking myself right now because I realised</span>
+<span class="c1"># it would have been better to create pass them as objects. This way I would have been</span>
+<span class="c1"># able to easily order them and also they would be easily extendable. Alas, I figure</span>
+<span class="c1"># I don&#39;t have the time to redo that. Serialisation is at least extendable, and I</span>
+<span class="c1"># prioritised that because it was in the brief.</span>
+<div class="viewcode-block" id="PhoneBookActions"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions">[docs]</a><span class="k">class</span> <span class="nc">PhoneBookActions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The PhoneBookActions class implements actions related to saving/editing/converting a phone book.</span>
+<span class="sd">    **output_file** is the name of the file you want to write your records to.</span>
+
+<span class="sd">    e.g. &quot;pbook.json&quot; will save to working dir and will save as .json</span>
+
+<span class="sd">    If the specified file type is not supported a ValueError is raised.</span>
+<span class="sd">    You can query supported filetypes using :meth:`query_filetypes`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+
+        <span class="c1"># determine file and file extension if there is one</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">output_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="n">output_file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># determine what filetypes.class to use based on the file extension</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reader_writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_reader_writer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># retrieve existing records</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_records</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;(string) the output file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;All phone book records in *dict* format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span>
+
+    <span class="c1"># This probably doesn&#39;t belong in this class</span>
+<div class="viewcode-block" id="PhoneBookActions.query_filetypes"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.query_filetypes">[docs]</a>    <span class="k">def</span> <span class="nf">query_filetypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convenient method that returns list of supported filetypes for serialization</span>
+<span class="sd">        :return: a list of supported filetypes from :meth:`phonebook.supported_filetypes.filetypes`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">supported_filetypes</span><span class="o">.</span><span class="n">filetypes</span><span class="o">.</span><span class="n">query_filetypes</span><span class="p">()]</span></div>
+
+    <span class="c1"># May have been better to create a record class instead of a dictionary, for extendability, and also for the ability</span>
+    <span class="c1"># to order the damn entries! Curse you python 2 and your un-ordered dictionary! Hmm well I guess I could have at</span>
+    <span class="c1"># least used an orderedDict...</span>
+<div class="viewcode-block" id="PhoneBookActions.add_record"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.add_record">[docs]</a>    <span class="k">def</span> <span class="nf">add_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a record and writes to :meth:`file`</span>
+<span class="sd">        Returns the record&#39;s order in the database, and the record that was added in *dict* form</span>
+
+<span class="sd">        :param name: string</span>
+<span class="sd">        :param address: string</span>
+<span class="sd">        :param phone: string</span>
+<span class="sd">        :return: order_id, database[order_id]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+                  <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">address</span><span class="p">),</span>
+                  <span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">phone</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)}</span>
+        <span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># order of records starts at 1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+            <span class="n">order_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+                <span class="n">order_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">order_id</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">order_id_list</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">order_id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">record</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_records</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">order_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">order_id</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.remove_record"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.remove_record">[docs]</a>    <span class="k">def</span> <span class="nf">remove_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove a record. Specify which record to remove by it&#39;s order_id</span>
+
+<span class="sd">        :param order_id: (int)</span>
+<span class="sd">        :return: dictionary of the entry that you just removed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">removed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">order_id</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">[</span><span class="n">order_id</span><span class="p">]</span>
+            <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">order_id_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">database</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order_id_list</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">order_id_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">store_records</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">removed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.retrieve_records"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.retrieve_records">[docs]</a>    <span class="k">def</span> <span class="nf">retrieve_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves records from :meth:`file` if it already exists</span>
+
+<span class="sd">        :return: *dict* of all the records from :meth:`file`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader_writer</span><span class="o">.</span><span class="n">read_from</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">database</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.store_records"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.store_records">[docs]</a>    <span class="k">def</span> <span class="nf">store_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;writes :meth:`database` to :meth:`file`</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reader_writer</span><span class="o">.</span><span class="n">write_to</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.publish_records"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.publish_records">[docs]</a>    <span class="k">def</span> <span class="nf">publish_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Takes :meth:`database` and creates a nice-looking html table. The resulting html file</span>
+<span class="sd">        is saved where :meth:`file` is</span>
+
+<span class="sd">        :return: *(string)* Name of newly written html file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">html_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_published.html&#39;</span>  <span class="c1"># html published file will save where ever the phonebook is</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">html_table</span> <span class="o">=</span> <span class="s2">&quot;&lt;table id=</span><span class="se">\&quot;</span><span class="s2">myTable</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                     <span class="s2">&quot;&lt;tr class=</span><span class="se">\&quot;</span><span class="s2">header</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="c1"># Get field names</span>
+        <span class="k">for</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">field_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">order_id</span><span class="p">]]</span>
+            <span class="c1"># field_names.insert(0, &#39;ID&#39;)</span>
+            <span class="k">break</span>
+        <span class="c1"># Get every record as a list</span>
+        <span class="k">for</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="p">[</span><span class="n">database</span><span class="p">[</span><span class="n">order_id</span><span class="p">][</span><span class="n">record</span><span class="p">]</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">order_id</span><span class="p">]]</span>
+            <span class="c1"># line.insert(0, int(order_id))</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+            <span class="n">html_table</span> <span class="o">+=</span> <span class="s2">&quot;&lt;th style=</span><span class="se">\&quot;</span><span class="s2">width:20%;</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="si">{}</span><span class="s2">&lt;/th&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+        <span class="n">html_table</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/tr&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">html_table</span> <span class="o">+=</span> <span class="s2">&quot;&lt;tr&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">html_table</span> <span class="o">+=</span> <span class="s2">&quot;&lt;td&gt;</span><span class="si">{}</span><span class="s2">&lt;/td&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span>
+            <span class="n">html_table</span> <span class="o">+=</span> <span class="s2">&quot;&lt;tr&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">html_table</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/table&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+        <span class="n">html</span> <span class="o">+=</span> <span class="n">html_template</span><span class="o">.</span><span class="n">template_top</span>
+        <span class="n">html</span> <span class="o">+=</span> <span class="n">html_table</span>
+        <span class="n">html</span> <span class="o">+=</span> <span class="n">html_template</span><span class="o">.</span><span class="n">template_bottom</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">html_output</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">html_output</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.list_records"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.list_records">[docs]</a>    <span class="k">def</span> <span class="nf">list_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Takes a dict of phonebook records and returns a string in an ordered, nice looking format</span>
+<span class="sd">        that can output to a commandline</span>
+
+<span class="sd">        :param database: *dict* of phonebook records</span>
+<span class="sd">        :return: *string* of phonebook records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">database</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">field_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">field_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">record</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">order_id</span><span class="p">]]</span>
+            <span class="n">field_names</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;ID&#39;</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="c1"># Get every record as a list</span>
+        <span class="k">for</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="p">[</span><span class="n">database</span><span class="p">[</span><span class="n">order_id</span><span class="p">][</span><span class="n">record</span><span class="p">]</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">order_id</span><span class="p">]]</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">order_id</span><span class="p">))</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="si">{:&lt;8}</span><span class="s2"> </span><span class="si">{:&lt;15}</span><span class="s2"> </span><span class="si">{:&lt;30}</span><span class="s2"> </span><span class="si">{:&lt;30}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">field_names</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{:&lt;8}</span><span class="s2"> </span><span class="si">{:&lt;15}</span><span class="s2"> </span><span class="si">{:&lt;30}</span><span class="s2"> </span><span class="si">{:&lt;30}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">string</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.convert_records"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.convert_records">[docs]</a>    <span class="k">def</span> <span class="nf">convert_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Takes :meth:`database` and writes it to *output_file*. If file extensions</span>
+<span class="sd">        is not supported then a ValueError will be raised</span>
+
+<span class="sd">        :param output_file: *(string)* new file to write to</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="n">output_file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">reader_writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_reader_writer</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">reader_writer</span><span class="o">.</span><span class="n">write_to</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PhoneBookActions.filter_records"><a class="viewcode-back" href="../../phonebook.html#phonebook.phonebook_actions.PhoneBookActions.filter_records">[docs]</a>    <span class="k">def</span> <span class="nf">filter_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_string</span><span class="p">,</span> <span class="n">filter_entry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter through :meth:`database` using Unix-shell style wildcards.</span>
+<span class="sd">        Passes in a string, *filter_string* that fnmatch can use to search through each entry of the</span>
+<span class="sd">        database.</span>
+
+<span class="sd">        Specifying *filter_entry* lets you filter by entry. e.g. &quot;name&quot;, &quot;address&quot;, or &quot;phone&quot; could</span>
+<span class="sd">        be used</span>
+
+<span class="sd">        :param filter_string: a search *string*</span>
+<span class="sd">        :param filter_entry: a *string* specifying entry type</span>
+<span class="sd">        :return: *dict* of phonebook records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">filtered_database</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filter_entry</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">record_type</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">record</span><span class="p">]:</span>
+                    <span class="n">to_match</span> <span class="o">=</span> <span class="n">database</span><span class="p">[</span><span class="n">record</span><span class="p">][</span><span class="n">record_type</span><span class="p">]</span>
+                    <span class="n">is_matched</span> <span class="o">=</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">to_match</span><span class="p">,</span> <span class="n">filter_string</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">is_matched</span><span class="p">:</span>
+                        <span class="n">filtered_database</span><span class="p">[</span><span class="n">record</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="p">[</span><span class="n">record</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filter_entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">record</span><span class="p">]:</span>
+                    <span class="k">return</span>
+                <span class="n">to_match</span> <span class="o">=</span> <span class="n">database</span><span class="p">[</span><span class="n">record</span><span class="p">][</span><span class="n">filter_entry</span><span class="p">]</span>
+                <span class="n">is_matched</span> <span class="o">=</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">to_match</span><span class="p">,</span> <span class="n">filter_string</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_matched</span><span class="p">:</span>
+                    <span class="n">filtered_database</span><span class="p">[</span><span class="n">record</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="p">[</span><span class="n">record</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">filtered_database</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_reader_writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC` object</span>
+<span class="sd">        for reading and writing the :meth:`file`</span>
+
+<span class="sd">        Will automatically query the available objects in :module:`phonebook.supported_filetypes.filetypes&#39;</span>
+<span class="sd">        if *format* is supported. If not a ValueError is raised.</span>
+
+<span class="sd">        :param format: *(string)* file extension e.g. &#39;json&#39;, &#39;csv&#39;, &#39;yaml&#39;</span>
+<span class="sd">        :return: :meth:`phonebook.supported_filetypes.filetypes_abstract.PhoneBookABC`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filetypes</span> <span class="o">=</span> <span class="n">supported_filetypes</span><span class="o">.</span><span class="n">filetypes</span><span class="o">.</span><span class="n">query_filetypes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="n">filetypes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">filetypes</span><span class="p">[</span><span class="nb">format</span><span class="p">]()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file extension &#39;</span><span class="si">{}</span><span class="s2">&#39; is not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">phone-book 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Michael Mason.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>
